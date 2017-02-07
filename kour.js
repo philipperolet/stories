@@ -1,7 +1,8 @@
 var ICON_SIZE = 20;
 var treeData =
     {
-	"name": "Add Step",
+	"name": "New Step",
+	"image": "add.png",
 	"children": [
 	    { 
 		"name": "Level 2: A",
@@ -81,10 +82,10 @@ function update(source) {
 	})
 	.on('click', click);
 
-    // Add Circle for the nodes
+    // Add image for the nodes
     nodeEnter.append('image')
 	.attr('class', 'node')
-	.attr("xlink:href","step-forward.svg")
+	.attr("xlink:href", function(d) { return d.data.image ? d.data.image : "step-forward.svg"; })
 	.attr("x",-ICON_SIZE/2).attr("y",-ICON_SIZE)
 	.attr("width", ICON_SIZE).attr("height",ICON_SIZE)
 
@@ -106,15 +107,6 @@ function update(source) {
             return "translate(" + d.y + "," + d.x + ")";
 	});
 
-    // Update the node attributes and style
-    nodeUpdate.select('circle.node')
-	.attr('r', 10)
-	.style("fill", function(d) {
-            return d._children ? "lightsteelblue" : "#fff";
-	})
-	.attr('cursor', 'pointer');
-
-
     // Remove any exiting nodes
     var nodeExit = node.exit().transition()
 	.duration(duration)
@@ -122,10 +114,6 @@ function update(source) {
             return "translate(" + source.y + "," + source.x + ")";
 	})
 	.remove();
-
-    // On exit reduce the node circles size to 0
-    nodeExit.select('circle')
-	.attr('r', 1e-6);
 
     // On exit reduce the opacity of text labels
     nodeExit.select('text')
@@ -180,7 +168,7 @@ function update(source) {
     }
 
     // Toggle children on click.
-    function click(d) {
+    function _click(d) {
 	if (d.children) {
             d._children = d.children;
             d.children = null;
@@ -189,6 +177,30 @@ function update(source) {
             d._children = null;
 	}
 	update(d);
+    }
+    function click(d) {
+	if (d.children) {
+	} else {
+            addNode(d, {"name":"New Step"});
+	    addNode(d, {"name":"New Step"});
+	    d.data.image = "add.png"
+	    d.data.name = "Top message"
+
+            d._children = null;
+	}
+	treeData.children[0].name = (treeData.children[1].name == "OFF")?"ON": "OFF";
+	update(d);
+    }
+    
+    function addNode(parentNode, data) {
+	child = d3.hierarchy(data);
+	child.parent = parentNode;
+	child.children = null;
+	child.depth = parentNode.depth + 1;
+	if (!parentNode.children) {
+	    parentNode.children = []
+	}
+	parentNode.children.push(child);
     }
 }
 
