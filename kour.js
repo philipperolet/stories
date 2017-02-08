@@ -73,6 +73,9 @@ function update(source) {
     // Update the nodes...
     var node = svg.selectAll('g.node')
 	.data(nodes, function(d) {return d.id || (d.id = ++i); });
+    
+    node.select("text").text(function(d) { return d.data.name });
+    node.select("image").attr("xlink:href",function(d) { return d.data.image });
 
     // Enter any new modes at the parent's previous position.
     var nodeEnter = node.enter().append('g')
@@ -80,7 +83,8 @@ function update(source) {
 	.attr("transform", function(d) {
             return "translate(" + source.y0 + "," + source.x0 + ")";
 	})
-	.on('click', click);
+	.on('click', click)
+	.on('contextmenu', rightclick);
 
     // Add image for the nodes
     nodeEnter.append('image')
@@ -176,19 +180,18 @@ function update(source) {
             d.children = d._children;
             d._children = null;
 	}
+	d.data.name = "clicked";
 	update(d);
     }
     function click(d) {
 	if (d.children) {
 	} else {
-            addNode(d, {"name":"New Step"});
-	    addNode(d, {"name":"New Step"});
+            addNode(d, {"name":"New Step", "image": "step-forward.svg"});
+	    addNode(d, {"name":"New Step", "image": "step-forward.svg"});
 	    d.data.image = "add.png"
 	    d.data.name = "Top message"
-
             d._children = null;
 	}
-	treeData.children[0].name = (treeData.children[1].name == "OFF")?"ON": "OFF";
 	update(d);
     }
     
@@ -202,5 +205,14 @@ function update(source) {
 	}
 	parentNode.children.push(child);
     }
+
+    function rightclick(d) {
+	if (d.children) {
+	} else {
+	    d.parent.children = null;
+	}
+	update(d.parent);
+    }
+
 }
 
