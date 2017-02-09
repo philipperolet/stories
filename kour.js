@@ -96,7 +96,16 @@ function update(source) {
 	.attr("xlink:href", function(d) { return d.data.image ? d.data.image : "step-forward.svg"; })
 	.attr("x",-ICON_SIZE/2).attr("y",-ICON_SIZE)
 	.attr("width", ICON_SIZE).attr("height",ICON_SIZE)
-
+    
+    // Add image labels for the branches
+    nodeEnter.append('image')
+	.attr('class', 'node')
+	.attr("xlink:href", function(d) {
+	    if (d.depth == 0) return "";
+	    return d.data.interaction ? "add.png" : "minus.png"; })
+	.attr("x",-ICON_SIZE*1.5).attr("y", ICON_SIZE/3.0)
+	.attr("width", ICON_SIZE/2.0).attr("height",ICON_SIZE/2.0)
+    
     // Add labels for the nodes
     nodeEnter.append('text')
 	.attr("dy", ".35em")
@@ -194,7 +203,7 @@ function change_step(d) {
     d.data.name = d3.select("#message").property('value');
     d._children = null;
     if (!(d.children) && d.depth < 3) {
-        addNode(d, {"name": NOUV_ETAPE, "image": "step-forward.svg"});
+        addNode(d, {"name": NOUV_ETAPE, "image": "step-forward.svg", "interaction": "True"});
 	addNode(d, {"name": NOUV_ETAPE, "image": "step-forward.svg"});
     }
     update(d);
