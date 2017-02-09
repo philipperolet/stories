@@ -7,18 +7,26 @@ body {
     text-align: center;
 }
 
-.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 3px;
-}
-
 .node text {
   font: 12px sans-serif;
+}
+
+.node text:hover {
+    padding: 2px;
+    border: grey thin solid;
 }
 
 .link {
   fill: none;
   stroke: #ccc;
   stroke-width: 2px;
+}
+
+.right-pane {
+    border-left: #ddd thin solid;
+    height: 450px;
+}
+
+.right-pane button {
+    margin-top: 1em
 }

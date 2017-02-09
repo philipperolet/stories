@@ -1,14 +1,16 @@
 var ICON_SIZE = 20;
+var NOUV_ETAPE = "Créer Etape";
+var currentNode = null;
 var treeData =
     {
-	"name": "New Step",
-	"image": "add.png",
+	"name": NOUV_ETAPE,
+	"image": "step-forward.svg",
 	"children": [
 	    { 
 		"name": "Level 2: A",
 		"children": [
-		    { "name": "Son of A" },
-		    { "name": "Daughter of A" }
+		    { "name": NOUV_ETAPE },
+		    { "name": NOUV_ETAPE }
 		]
 	    },
 	    { "name": "Level 2: B" }
@@ -18,7 +20,7 @@ var treeData =
 // Set the dimensions and margins of the diagram
 var margin = {top: 20, right: 90, bottom: 30, left: 90},
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 415 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
@@ -43,7 +45,7 @@ root.x0 = height / 2;
 root.y0 = 0;
 
 // Collapse after the second level
-root.children.forEach(collapse);
+collapse(root);
 
 update(root);
 
@@ -76,6 +78,8 @@ function update(source) {
     
     node.select("text").text(function(d) { return d.data.name });
     node.select("image").attr("xlink:href",function(d) { return d.data.image });
+    node.attr("data-toggle","modal");
+    node.attr("data-target","#myModal");
 
     // Enter any new modes at the parent's previous position.
     var nodeEnter = node.enter().append('g')
@@ -170,49 +174,39 @@ function update(source) {
 
 	return path
     }
-
-    // Toggle children on click.
-    function _click(d) {
-	if (d.children) {
-            d._children = d.children;
-            d.children = null;
-	} else {
-            d.children = d._children;
-            d._children = null;
-	}
-	d.data.name = "clicked";
-	update(d);
-    }
     function click(d) {
-	if (d.children) {
-	} else {
-            addNode(d, {"name":"New Step", "image": "step-forward.svg"});
-	    addNode(d, {"name":"New Step", "image": "step-forward.svg"});
-	    d.data.image = "add.png"
-	    d.data.name = "Top message"
-            d._children = null;
-	}
+	currentNode = d;
 	update(d);
     }
-    
-    function addNode(parentNode, data) {
-	child = d3.hierarchy(data);
-	child.parent = parentNode;
-	child.children = null;
-	child.depth = parentNode.depth + 1;
-	if (!parentNode.children) {
-	    parentNode.children = []
-	}
-	parentNode.children.push(child);
-    }
-
     function rightclick(d) {
 	if (d.children) {
 	} else {
 	    d.parent.children = null;
+	    d3.event.preventDefault();
 	}
 	update(d.parent);
     }
 
 }
 
+function change_step(d) {
+    d.data.image = d3.select("#canal").property('value');
+    d.data.name = d3.select("#message").property('value');
+    d._children = null;
+    if (!(d.children) && d.depth < 3) {
+        addNode(d, {"name": NOUV_ETAPE, "image": "step-forward.svg"});
+	addNode(d, {"name": NOUV_ETAPE, "image": "step-forward.svg"});
+    }
+    update(d);
+}
+
+function addNode(parentNode, data) {
+    child = d3.hierarchy(data);
+    child.parent = parentNode;
+    child.children = null;
+    child.depth = parentNode.depth + 1;
+    if (!parentNode.children) {
+	parentNode.children = []
+    }
+    parentNode.children.push(child);
+}
