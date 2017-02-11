@@ -2,11 +2,17 @@
 
 Backlog
 --
-
-# apparition des flèches de conversion en plus des flèches normales 
-
+Done
+--
+ apparition des flèches de conversion en plus des flèches normales 
+Doing
+--
 - % de conv sur un run
+-- empty conv - rectange avec 1000 / 100% lors de "lancer camp.
 -- Matrice: perf message / canal * transition * aud
+
+Doable
+--
 
 - Résultats CAC / Reach / Dépense média sur un run
 - Plusieurs profils

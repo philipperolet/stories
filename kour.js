@@ -1,13 +1,18 @@
-var ICON_SIZE = 16;
+var ICON_SIZE = 20;
 var NOUV_ETAPE = "Créer Etape";
 var currentNode = null;
-var channelImage = {
+var channelImages = {
     "facebook": "fb.png",
     "display": "display.png",
     "email": "email.png",
     "new": "step-forward.svg",
     "conversion": "shopping-cart.svg"
 };
+var branchTypes = {
+    "conversion": {"image":"euro.svg", "textColor":"blue"},
+    "positive": {"image":"add.png", "textColor":"green"},
+    "negative": {"image":"minus.png", "textColor":"red"}
+}
 
 var treeData =
     {
@@ -22,9 +27,9 @@ var treeData =
     };
 
 // Set the dimensions and margins of the diagram
-var margin = {top: 0, right: 90, bottom: -20, left: 30},
+var margin = {top: -20, right: 90, bottom: -20, left: 30},
     width = 960 - margin.left - margin.right,
-    height = 480 - margin.top - margin.bottom;
+    height = 700 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
@@ -79,47 +84,64 @@ function update(source) {
     // Update the nodes...
     var node = svg.selectAll('g.node')
 	.data(nodes, function(d) {return d.id || (d.id = ++i); });
-    
-    node.select("text").text(function(d) { return d.data.name });
-    node.select("image").attr("xlink:href",function(d) { return channelImage[d.data.channel] });
-    node.select('image.branch')
-    	.attr("x",-180*0.42).attr("y", function(d) { return d.parent ? (d.parent.x - d.x)*0.42 : 0;});
-    
+        
     // Enter any new modes at the parent's previous position.
     var nodeEnter = node.enter().append('g')
 	.attr('class', 'node')
-	.attr("data-toggle","modal")
-	.attr("data-target","#myModal")
 	.attr("transform", function(d) {
             return "translate(" + source.y0 + "," + source.x0 + ")";
 	})
-	.on('click', click)
-	.on('contextmenu', rightclick);
 
     // Add image for the nodes
     nodeEnter.append('image')
 	.attr('class', 'node')
-	.attr("xlink:href", function(d) { return channelImage[d.data.channel] })
 	.attr("x",-ICON_SIZE/2).attr("y",-ICON_SIZE)
 	.attr("width", ICON_SIZE).attr("height",ICON_SIZE)
-    
+	.filter(function(d) { return d.data.type != "conversion"; })
+	.attr("data-toggle","modal")
+	.attr("data-target","#myModal")
+	.on('click', click)
+	.on('contextmenu', rightclick);
+        
+
+    var midPath = nodeEnter.filter(function(d) { return d.data.type; }).append('g')
+	.attr('class', 'midpath');
+
+    // Add KPI boxes for the branches
+    midPath.append('g')
+	.append('rect')
+	.attr('width', 30).attr('height', 24)
+	.attr('x',-15).attr('y', -10)
+	.attr('fill', 'white')
+	.attr('stroke','black');
+    var kpis = midPath.select('g')
+	.append('text').attr('fill', function(d) { return branchTypes[d.data.type].textColor; })
+    kpis.append('tspan').attr('x', '-13').attr('y','-10').attr('dy',"1em").text("1000");
+    kpis.append('tspan').attr('x', '-13').attr('y','-10').attr('dy',"2em").text('100%');
+
     // Add image labels for the branches
-    nodeEnter.append('image')
+    midPath.append('image')
 	.attr('class', 'node branch')
-	.attr("xlink:href", getBranchImage)
-	.attr("x",-180*0.42).attr("y", function(d) { return d.parent ? (d.parent.x - d.x)*0.35 : 0;})
+	.attr("xlink:href", function(d) { return branchTypes[d.data.type].image; })
 	.attr("width", ICON_SIZE/2.0).attr("height",ICON_SIZE/2.0)
-    
+
     // Add labels for the nodes
     nodeEnter.append('text')
 	.attr("dy", ".35em")
 	.attr("x",0)
 	.attr("y", -ICON_SIZE-5)
 	.attr("text-anchor", "middle")
-	.text(function(d) { return d.data.name; });
+	.attr("class","label");
 
     // UPDATE
     var nodeUpdate = nodeEnter.merge(node);
+    
+    nodeUpdate.select("text.label").text(function(d) { return d.data.name });
+    nodeUpdate.select("image").attr("xlink:href",function(d) { return channelImages[d.data.channel] });
+    nodeUpdate.select("g")
+	.attr("transform", function(d) {
+	    return "translate("+ (-180*0.5) + "," + (d.parent ? (d.parent.x - d.x)*0.5 : 0) + ")";
+	}).select('image')
 
     // Transition to the proper position for the node
     nodeUpdate.transition()
@@ -207,9 +229,9 @@ function change_step(d) {
     d.data.name = d3.select("#message").property('value');
     d._children = null;
     if (!(d.children) && d.depth < 3 && d.data.type != "conversion") {
-	addNode(d, {"name": "Conversion!", "channel": "conversion", "type":"conversion"});
         addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type":"positive"});
 	addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type": "negative"});	
+	addNode(d, {"name": "Conversion!", "channel": "conversion", "type":"conversion"});
     }
     update(d);
 }
@@ -237,4 +259,9 @@ function getBranchImage(d) {
     return "";
 }
 
-	
+function launchCampaign() {
+    midpaths = d3.selectAll("g.midpath");
+    midpaths.select('g').attr("style","display: block;");
+    midpaths.select('image').attr("style","display: none;");
+    d3.selectAll("image.node").attr("data-toggle","").on('click', null).on('contextmenu', null);
+}

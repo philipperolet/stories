@@ -8,7 +8,15 @@ body {
 }
 
 .node text {
-  font: 9px sans-serif;
+    font: 10px sans-serif;
+}
+
+.node .midpath text {
+    font-weight: bold;
+}
+
+.node .midpath g {
+    display: none
 }
 
 .node text:hover {
@@ -29,4 +37,8 @@ body {
 
 .right-pane button {
     margin-top: 1em
+}
+
+.kpi rect {
+    border: thin solid black;
 }
