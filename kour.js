@@ -1,26 +1,30 @@
-var ICON_SIZE = 20;
+var ICON_SIZE = 16;
 var NOUV_ETAPE = "Créer Etape";
 var currentNode = null;
+var channelImage = {
+    "facebook": "fb.png",
+    "display": "display.png",
+    "email": "email.png",
+    "new": "step-forward.svg",
+    "conversion": "shopping-cart.svg"
+};
+
 var treeData =
     {
 	"name": NOUV_ETAPE,
-	"image": "step-forward.svg",
+	"channel": "new",
 	"children": [
 	    { 
 		"name": "Level 2: A",
-		"children": [
-		    { "name": NOUV_ETAPE },
-		    { "name": NOUV_ETAPE }
-		]
 	    },
 	    { "name": "Level 2: B" }
 	]
     };
 
 // Set the dimensions and margins of the diagram
-var margin = {top: 20, right: 90, bottom: 30, left: 90},
+var margin = {top: 0, right: 90, bottom: -20, left: 30},
     width = 960 - margin.left - margin.right,
-    height = 415 - margin.top - margin.bottom;
+    height = 480 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
@@ -77,13 +81,15 @@ function update(source) {
 	.data(nodes, function(d) {return d.id || (d.id = ++i); });
     
     node.select("text").text(function(d) { return d.data.name });
-    node.select("image").attr("xlink:href",function(d) { return d.data.image });
-    node.attr("data-toggle","modal");
-    node.attr("data-target","#myModal");
-
+    node.select("image").attr("xlink:href",function(d) { return channelImage[d.data.channel] });
+    node.select('image.branch')
+    	.attr("x",-180*0.42).attr("y", function(d) { return d.parent ? (d.parent.x - d.x)*0.42 : 0;});
+    
     // Enter any new modes at the parent's previous position.
     var nodeEnter = node.enter().append('g')
 	.attr('class', 'node')
+	.attr("data-toggle","modal")
+	.attr("data-target","#myModal")
 	.attr("transform", function(d) {
             return "translate(" + source.y0 + "," + source.x0 + ")";
 	})
@@ -93,24 +99,22 @@ function update(source) {
     // Add image for the nodes
     nodeEnter.append('image')
 	.attr('class', 'node')
-	.attr("xlink:href", function(d) { return d.data.image ? d.data.image : "step-forward.svg"; })
+	.attr("xlink:href", function(d) { return channelImage[d.data.channel] })
 	.attr("x",-ICON_SIZE/2).attr("y",-ICON_SIZE)
 	.attr("width", ICON_SIZE).attr("height",ICON_SIZE)
     
     // Add image labels for the branches
     nodeEnter.append('image')
-	.attr('class', 'node')
-	.attr("xlink:href", function(d) {
-	    if (d.depth == 0) return "";
-	    return d.data.interaction ? "add.png" : "minus.png"; })
-	.attr("x",-ICON_SIZE*1.5).attr("y", ICON_SIZE/3.0)
+	.attr('class', 'node branch')
+	.attr("xlink:href", getBranchImage)
+	.attr("x",-180*0.42).attr("y", function(d) { return d.parent ? (d.parent.x - d.x)*0.35 : 0;})
 	.attr("width", ICON_SIZE/2.0).attr("height",ICON_SIZE/2.0)
     
     // Add labels for the nodes
     nodeEnter.append('text')
 	.attr("dy", ".35em")
 	.attr("x",0)
-	.attr("y", -ICON_SIZE-10)
+	.attr("y", -ICON_SIZE-5)
 	.attr("text-anchor", "middle")
 	.text(function(d) { return d.data.name; });
 
@@ -199,12 +203,13 @@ function update(source) {
 }
 
 function change_step(d) {
-    d.data.image = d3.select("#canal").property('value');
+    d.data.channel = d3.select("#canal").property('value');
     d.data.name = d3.select("#message").property('value');
     d._children = null;
-    if (!(d.children) && d.depth < 3) {
-        addNode(d, {"name": NOUV_ETAPE, "image": "step-forward.svg", "interaction": "True"});
-	addNode(d, {"name": NOUV_ETAPE, "image": "step-forward.svg"});
+    if (!(d.children) && d.depth < 3 && d.data.type != "conversion") {
+	addNode(d, {"name": "Conversion!", "channel": "conversion", "type":"conversion"});
+        addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type":"positive"});
+	addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type": "negative"});	
     }
     update(d);
 }
@@ -219,3 +224,17 @@ function addNode(parentNode, data) {
     }
     parentNode.children.push(child);
 }
+
+function getBranchImage(d) {
+    // Returns the little image below the tree branch
+    // to indicate the kind of
+    imageMap = {
+	"conversion": "euro.svg",
+	"positive": "add.png",
+	"negative": "minus.png"
+    }
+    if (d.data.type) return imageMap[d.data.type];
+    return "";
+}
+
+	
