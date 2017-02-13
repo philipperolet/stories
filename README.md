@@ -7,14 +7,17 @@ Done
  apparition des flèches de conversion en plus des flèches normales 
 Doing
 --
-- % de conv sur un run
--- empty conv - rectange avec 1000 / 100% lors de "lancer camp.
--- Matrice: perf message / canal * transition * aud
+### Les KPIs
+OK empty conv - rectange avec 1000 / 100% lors de "lancer camp."
+
+-- ajout rectangles finaux
+-- calcul via matrice: perf message / canal * transition * aud
+- Résultats CAC / Reach / Dépense média sur un run
+-- bouton retry
 
 Doable
 --
 
-- Résultats CAC / Reach / Dépense média sur un run
 - Plusieurs profils
 
 - IA : animation petit à petit
