@@ -211,15 +211,27 @@ function update(source) {
 function change_step(d) {
     d.data.channel = d3.select("#canal").property('value');
     d.data.name = d3.select("#message").property('value');
+    d.data.message = d3.select("#message").property('value');
     d._children = null;
     if (!(d.children) && d.depth < 3 && d.data.type != "conversion") {
-        addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type":"engagement", "reach": Math.ceil(0.1 * d.data.reach)});
-	addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type": "negative", "reach": Math.ceil(0.89 * d.data.reach)});	
-	addNode(d, {"name": "Conversion!", "channel": "conversion", "type":"conversion", "reach": Math.ceil(0.01 * d.data.reach)});
+        addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type":"engagement", "reach": getNewNodeReach(d, "engagement") });
+	addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type": "negative", "reach": getNewNodeReach(d, "negative") });
+	addNode(d, {"name": "Conversion!", "channel": "conversion", "type":"conversion", "reach": getNewNodeReach(d, "conversion") });
     }
     update(d);
 }
 
+function getNewNodeReach(parent, type) {
+    var line =parent.data.message +
+	parent.data.channel +
+	type +
+	(parent.parent ? parent.parent.data.message : "none") +
+	(parent.parent ? parent.parent.data.channel : "none") +
+	parent.depth;
+    console.log(line);
+    return Math.ceil(parent.data.reach * rates[line][type]);
+}
+    
 function addNode(parentNode, data) {
     child = d3.hierarchy(data);
     child.parent = parentNode;
