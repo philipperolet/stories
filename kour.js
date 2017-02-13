@@ -1,30 +1,5 @@
 var ICON_SIZE = 20;
-var NOUV_ETAPE = "Créer Etape";
 var currentNode = null;
-var channelImages = {
-    "facebook": "fb.png",
-    "display": "display.png",
-    "email": "email.png",
-    "new": "step-forward.svg",
-    "conversion": "shopping-cart.svg"
-};
-var branchTypes = {
-    "conversion": {"image":"euro.svg", "textColor":"blue"},
-    "positive": {"image":"add.png", "textColor":"green"},
-    "negative": {"image":"minus.png", "textColor":"red"}
-}
-
-var treeData =
-    {
-	"name": NOUV_ETAPE,
-	"channel": "new",
-	"children": [
-	    { 
-		"name": "Level 2: A",
-	    },
-	    { "name": "Level 2: B" }
-	]
-    };
 
 // Set the dimensions and margins of the diagram
 var margin = {top: -20, right: 90, bottom: -20, left: 30},
@@ -116,8 +91,17 @@ function update(source) {
 	.attr('stroke','black');
     var kpis = midPath.select('g')
 	.append('text').attr('fill', function(d) { return branchTypes[d.data.type].textColor; })
-    kpis.append('tspan').attr('x', '-13').attr('y','-10').attr('dy',"1em").text("1000");
-    kpis.append('tspan').attr('x', '-13').attr('y','-10').attr('dy',"2em").text('100%');
+    kpis.append('tspan')
+	.attr('x', '-13').attr('y','-10').attr('dy',"1em")
+	.text(function(d) { return formatNumber(d.data.reach); });
+    kpis.append('tspan')
+	.attr('x', '-13').attr('y','-10').attr('dy',"2em")
+	.text(function(d) {
+	    var ctr = 100*d.data.reach / d.parent.data.reach;
+	    return ctr.toPrecision(2)+"%";
+	});
+	
+    
 
     // Add image labels for the branches
     midPath.append('image')
@@ -137,7 +121,7 @@ function update(source) {
     var nodeUpdate = nodeEnter.merge(node);
     
     nodeUpdate.select("text.label").text(function(d) { return d.data.name });
-    nodeUpdate.select("image").attr("xlink:href",function(d) { return channelImages[d.data.channel] });
+    nodeUpdate.select("image").attr("xlink:href",function(d) { return d.data.channel+".png"; });
     nodeUpdate.select("g")
 	.attr("transform", function(d) {
 	    return "translate("+ (-180*0.5) + "," + (d.parent ? (d.parent.x - d.x)*0.5 : 0) + ")";
@@ -229,9 +213,9 @@ function change_step(d) {
     d.data.name = d3.select("#message").property('value');
     d._children = null;
     if (!(d.children) && d.depth < 3 && d.data.type != "conversion") {
-        addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type":"positive"});
-	addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type": "negative"});	
-	addNode(d, {"name": "Conversion!", "channel": "conversion", "type":"conversion"});
+        addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type":"engagement", "reach": Math.ceil(0.1 * d.data.reach)});
+	addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type": "negative", "reach": Math.ceil(0.89 * d.data.reach)});	
+	addNode(d, {"name": "Conversion!", "channel": "conversion", "type":"conversion", "reach": Math.ceil(0.01 * d.data.reach)});
     }
     update(d);
 }
@@ -252,7 +236,7 @@ function getBranchImage(d) {
     // to indicate the kind of
     imageMap = {
 	"conversion": "euro.svg",
-	"positive": "add.png",
+	"engagement": "add.png",
 	"negative": "minus.png"
     }
     if (d.data.type) return imageMap[d.data.type];
@@ -265,3 +249,22 @@ function launchCampaign() {
     midpaths.select('image').attr("style","display: none;");
     d3.selectAll("image.node").attr("data-toggle","").on('click', null).on('contextmenu', null);
 }
+
+function formatNumber(num) {
+    // Formats a number with K for 1000s, M for millions, with a precision of 2
+    switch (Math.floor(Math.log10(num))) {
+    case 1:
+    case 2:
+	return num;
+    case 3:
+    case 4:
+	return (num/1000).toPrecision(2) + "K";
+    default:
+	return (num/1000000).toPrecision(2) + "M";
+    }
+}
+	
+	
+	
+	
+    
