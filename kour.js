@@ -262,18 +262,47 @@ function launchCampaign() {
     midpaths.select('image').attr("style","display: none;");
     d3.selectAll("image.node").attr("data-toggle","").on('click', null).on('contextmenu', null);
 
-    // TODO
+    // Display results
+    var results = getCampaignResults();
+    d3.select('.results').attr("style", "display: block;");
+    ['media-cost', 'cac', 'conversions'].forEach(function(kpi) {
+	d3.select('.results .'+kpi).text(formatNumber(results[kpi]));
+    });
+}
+
+function getCampaignResults() {
+    var conversions = 0, cac = 0, mediaCost = 0;
+    var nodes = treemap(root).descendants();
+    nodes.forEach(function(node) {
+	if ($.inArray(node.data.channel, channels) >= 0) {
+	    mediaCost += node.data.reach * channelDetails[node.data.channel]["cost"];
+	}
+	if (node.data.type == "conversion") {
+	    conversions += node.data.reach;
+	}
+    });
+    cac = mediaCost / conversions;
+    return {
+	"conversions": conversions,
+	"cac": cac,
+	"media-cost": mediaCost
+    };
 }
 
 function formatNumber(num) {
     // Formats a number with K for 1000s, M for millions, with a precision of 2
     switch (Math.floor(Math.log10(num))) {
+    case -2:
+    case -1:
+    case 0:
     case 1:
     case 2:
 	return num;
     case 3:
     case 4:
 	return (num/1000).toPrecision(2) + "K";
+    case 5:
+	return (num/1000).toPrecision(3) + "K";
     default:
 	return (num/1000000).toPrecision(2) + "M";
     }

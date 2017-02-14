@@ -42,3 +42,9 @@ body {
 .kpi rect {
     border: thin solid black;
 }
+
+/* RESULTS*/
+
+.results {
+    display: none;
+}
