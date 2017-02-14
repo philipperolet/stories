@@ -13,8 +13,9 @@ OK calcul selon valeur des noeuds
 OK calcul via matrice: perf message / canal * transition * aud
 
 -- ajout rectangles finaux
-- Résultats CAC / Reach / Dépense média sur un run
+-- Résultats CAC / Reach / Dépense média sur un run
 -- bouton retry
+-- Ajout de règles business FB & autres
 
 Doable
 --

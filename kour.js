@@ -228,7 +228,6 @@ function getNewNodeReach(parent, type) {
 	(parent.parent ? parent.parent.data.message : "none") +
 	(parent.parent ? parent.parent.data.channel : "none") +
 	parent.depth;
-    console.log(line);
     return Math.ceil(parent.data.reach * rates[line][type]);
 }
     
@@ -256,10 +255,24 @@ function getBranchImage(d) {
 }
 
 function launchCampaign() {
-    midpaths = d3.selectAll("g.midpath");
+    // Change new nodes into "end" nodes
+    var treeData = treemap(root);
+    var nodes = treeData.descendants();
+    nodes.forEach(function(node) {
+	if (node.data.channel == "new") {
+	    node.data.channel = "stop";
+	    node.data.name = "";
+	}
+    });
+    update(root);
+    
+    // display KPI boxes
+    var midpaths = d3.selectAll("g.midpath");
     midpaths.select('g').attr("style","display: block;");
     midpaths.select('image').attr("style","display: none;");
     d3.selectAll("image.node").attr("data-toggle","").on('click', null).on('contextmenu', null);
+
+    // TODO
 }
 
 function formatNumber(num) {
