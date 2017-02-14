@@ -11,8 +11,8 @@ Doing
 OK empty conv - rectange avec 1000 / 100% lors de "lancer camp."
 OK calcul selon valeur des noeuds
 OK calcul via matrice: perf message / canal * transition * aud
+OK ajout rectangles finaux
 
--- ajout rectangles finaux
 -- Résultats CAC / Reach / Dépense média sur un run
 -- bouton retry
 -- Ajout de règles business FB & autres

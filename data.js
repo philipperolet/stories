@@ -6,8 +6,8 @@ var channels = ["facebook", "display", "email"];
 var messages = ["humour", "pratique", "pas_cher"];
 var branches = ["engagement", "negative", "conversion"]
 var branchTypes = {
-    "conversion": {"image":"euro.svg", "textColor":"blue"},
-    "engagement": {"image":"add.png", "textColor":"green"},
+    "conversion": {"image":"euro.png", "textColor":"green"},
+    "engagement": {"image":"like.png", "textColor":"blue"},
     "negative": {"image":"minus.png", "textColor":"red"}
 }
 

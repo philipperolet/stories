@@ -214,8 +214,8 @@ function change_step(d) {
     d.data.message = d3.select("#message").property('value');
     d._children = null;
     if (!(d.children) && d.depth < 3 && d.data.type != "conversion") {
+	addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type": "negative", "reach": getNewNodeReach(d, "negative") });	
         addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type":"engagement", "reach": getNewNodeReach(d, "engagement") });
-	addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type": "negative", "reach": getNewNodeReach(d, "negative") });
 	addNode(d, {"name": "Conversion!", "channel": "conversion", "type":"conversion", "reach": getNewNodeReach(d, "conversion") });
     }
     update(d);
@@ -242,26 +242,16 @@ function addNode(parentNode, data) {
     parentNode.children.push(child);
 }
 
-function getBranchImage(d) {
-    // Returns the little image below the tree branch
-    // to indicate the kind of
-    imageMap = {
-	"conversion": "euro.svg",
-	"engagement": "add.png",
-	"negative": "minus.png"
-    }
-    if (d.data.type) return imageMap[d.data.type];
-    return "";
-}
-
 function launchCampaign() {
-    // Change new nodes into "end" nodes
+    // Change new nodes into "end" nodes and add conversion boxes for end nodes
     var treeData = treemap(root);
     var nodes = treeData.descendants();
     nodes.forEach(function(node) {
 	if (node.data.channel == "new") {
 	    node.data.channel = "stop";
 	    node.data.name = "";
+	} else if (node.children == null && node.data.type != "conversion") {
+	    addNode(node, {"name": "Conversion!", "channel": "conversion", "type":"conversion", "reach": getNewNodeReach(node, "conversion") });
 	}
     });
     update(root);
