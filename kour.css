@@ -32,7 +32,9 @@ body {
 
 .right-pane {
     border-left: #ddd thin solid;
-    height: 450px;
+    border-bottom: #ddd thin solid;
+    padding-bottom: 1em;
+    margin-left: -1em;
 }
 
 .right-pane button {
