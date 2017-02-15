@@ -28,19 +28,54 @@ root = d3.hierarchy(treeData, function(d) { return d.children; });
 root.x0 = height / 2;
 root.y0 = 0;
 
-// Collapse after the second level
-collapse(root);
+// Adds a few functions to nodes object
+root.__proto__.updateStep = function() {
+    this.data.channel = d3.select("#canal").property('value');
+    this.data.name = d3.select("#message").property('value');
+    this.data.message = d3.select("#message").property('value');
+    this._children = null;
+    if (!(this.children) && this.depth < 3 && this.data.type != "conversion") {
+	this.addNode({"name": NOUV_ETAPE, "channel": "new", "type": "negative"});	
+        this.addNode({"name": NOUV_ETAPE, "channel": "new", "type":"engagement"});
+	this.addNode({"name": "Conversion!", "channel": "conversion", "type":"conversion"});
+    }
+    this.children.forEach(function(child) { child.data.reach = child.getNodeReach(); });
+}
 
-update(root);
+root.__proto__.getNodeReach = function() {
+    var line = this.parent.data.message +
+	this.parent.data.channel +
+	this.data.type +
+	(this.parent.parent ? this.parent.parent.data.message : "none") +
+	(this.parent.parent ? this.parent.parent.data.channel : "none") +
+	this.parent.depth;
+    return Math.ceil(this.parent.data.reach * rates[line][this.data.type]);
+}
+    
+root.__proto__.addNode = function(data) {
+    child = d3.hierarchy(data);
+    child.parent = this;
+    child.children = null;
+    child.depth = this.depth + 1;
+    if (!this.children) {
+	this.children = []
+    }
+    this.children.push(child);
+}
 
 // Collapse the node and all it's children
-function collapse(d) {
-    if(d.children) {
-	d._children = d.children
-	d._children.forEach(collapse)
-	d.children = null
+root.__proto__.collapse = function () {
+    if(this.children) {
+	this._children = this.children;
+	this._children.forEach(function(child) { child.collapse(); });
+	this.children = null;
     }
 }
+
+// Collapse after the second level
+root.collapse()
+
+update(root);
 
 function update(source) {
 
@@ -208,40 +243,6 @@ function update(source) {
 
 }
 
-function change_step(d) {
-    d.data.channel = d3.select("#canal").property('value');
-    d.data.name = d3.select("#message").property('value');
-    d.data.message = d3.select("#message").property('value');
-    d._children = null;
-    if (!(d.children) && d.depth < 3 && d.data.type != "conversion") {
-	addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type": "negative", "reach": getNewNodeReach(d, "negative") });	
-        addNode(d, {"name": NOUV_ETAPE, "channel": "new", "type":"engagement", "reach": getNewNodeReach(d, "engagement") });
-	addNode(d, {"name": "Conversion!", "channel": "conversion", "type":"conversion", "reach": getNewNodeReach(d, "conversion") });
-    }
-    update(d);
-}
-
-function getNewNodeReach(parent, type) {
-    var line =parent.data.message +
-	parent.data.channel +
-	type +
-	(parent.parent ? parent.parent.data.message : "none") +
-	(parent.parent ? parent.parent.data.channel : "none") +
-	parent.depth;
-    return Math.ceil(parent.data.reach * rates[line][type]);
-}
-    
-function addNode(parentNode, data) {
-    child = d3.hierarchy(data);
-    child.parent = parentNode;
-    child.children = null;
-    child.depth = parentNode.depth + 1;
-    if (!parentNode.children) {
-	parentNode.children = []
-    }
-    parentNode.children.push(child);
-}
-
 function launchCampaign() {
     // Change new nodes into "end" nodes and add conversion boxes for end nodes
     var treeData = treemap(root);
@@ -284,7 +285,7 @@ function getCampaignResults() {
     cac = mediaCost / conversions;
     return {
 	"conversions": conversions,
-	"cac": cac,
+	"cac": cac.toPrecision(3),
 	"media-cost": mediaCost
     };
 }
@@ -300,11 +301,10 @@ function formatNumber(num) {
 	return num;
     case 3:
     case 4:
-	return (num/1000).toPrecision(2) + "K";
     case 5:
 	return (num/1000).toPrecision(3) + "K";
     default:
-	return (num/1000000).toPrecision(2) + "M";
+	return (num/1000000).toPrecision(3) + "M";
     }
 }
 	
