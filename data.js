@@ -34,10 +34,12 @@ messages.forEach(function(message) {
 	    messages.concat(["none"]).forEach(function(prev_message) {
 		channels.concat(["none"]).forEach(function(prev_channel) {
 		    for (var depth=0; depth < 4; depth++) {
+			var conv = 0.0003 * (0.5 + Math.random()),
+			    eng = 0.003 * (0.5 + Math.random());
 			rates[message + channel + reaction + prev_message + prev_channel + depth] = {
-			    "conversion": 0.001,
-			    "engagement": 0.005,
-			    "negative": 0.994
+			    "conversion": conv,
+			    "engagement": eng,
+			    "negative": 1-conv-eng
 			};
 		    }
 		});

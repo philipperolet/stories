@@ -8,7 +8,7 @@ function launchCampaign() {
 	    node.data.channel = "stop";
 	    node.data.name = "";
 	} else if (node.children == null && node.data.type != "conversion") {
-	    addNode(node, {"name": "Conversion!", "channel": "conversion", "type":"conversion", "reach": getNewNodeReach(node, "conversion") });
+	    node.addNode({"name": "Conversion!", "channel": "conversion", "type":"conversion"});
 	}
     });
     update(root);
@@ -47,6 +47,8 @@ function getCampaignResults() {
 }
 
 function optimizeByIA() {
-    
-			 
+    var optimum = [{}, {}, {}, {}];
+    for(var depth=3; depth ; depth++) {
+    }	
 }
+

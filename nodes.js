@@ -48,7 +48,9 @@ root.__proto__._updateStepData = function(stepData) {
         this.addNode({"name": NOUV_ETAPE, "channel": "new", "type":"engagement"});
 	this.addNode({"name": "Conversion!", "channel": "conversion", "type":"conversion"});
     }
-    this.children.forEach(function(child) { child.data.reach = child.getNodeReach(); });
+    else if (this.children) {
+	this.children.forEach(function(child) { child.data.reach = child.getNodeReach(); });
+    }
 }
 
 root.__proto__.getNodeReach = function() {
@@ -69,6 +71,7 @@ root.__proto__.addNode = function(data) {
     if (!this.children) {
 	this.children = []
     }
+    child.data.reach = child.getNodeReach();
     this.children.push(child);
 }
 
@@ -142,7 +145,7 @@ function update(source) {
 	.attr('x', '-13').attr('y','-10').attr('dy',"2em")
 	.text(function(d) {
 	    var ctr = 100*d.data.reach / d.parent.data.reach;
-	    return ctr.toPrecision(2)+"%";
+	    return ctr.toPrecision(3)+"%";
 	});
 	
     
