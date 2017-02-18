@@ -14,12 +14,17 @@ var branchTypes = {
     "engagement": {"image":"like.png", "textColor":"blue"},
     "negative": {"image":"minus.png", "textColor":"red"}
 }
+var INITIAL_REACH = 100000000;
 
+/* ROOT NODE DATA
+Note: the type is meaningless for root node, but used 
+in computations */
 var treeData =
     {
 	"name": NOUV_ETAPE,
 	"channel": "new",
-	"reach": 100000000,
+	"reach": INITIAL_REACH,
+	"type": "engagement",
 	"children": [
 	    { 
 		"name": "Level 2: A",

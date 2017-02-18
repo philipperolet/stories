@@ -48,15 +48,24 @@ root.__proto__._updateStepData = function(stepData) {
         this.addNode({"name": NOUV_ETAPE, "channel": "new", "type":"engagement"});
 	this.addNode({"name": "Conversion!", "channel": "conversion", "type":"conversion"});
     }
-    else if (this.children) {
-	this.children.forEach(function(child) { child.data.reach = child.getNodeReach(); });
+    this._updateNodeReach();
+}
+
+root.__proto__._updateNodeReach = function () {
+    this.data.reach = this.getNodeReach();
+    if (this.children) {
+	this.children.forEach(function(child) { child._updateNodeReach(); });
     }
 }
 
 root.__proto__.getNodeReach = function() {
+    // returns how many people are reached by this node's message
+    if (!this.parent) {
+	return INITIAL_REACH;
+    }
     var line = this.parent.data.message +
 	this.parent.data.channel +
-	this.data.type +
+	this.parent.data.type +
 	(this.parent.parent ? this.parent.parent.data.message : "none") +
 	(this.parent.parent ? this.parent.parent.data.channel : "none") +
 	this.parent.depth;
@@ -71,7 +80,7 @@ root.__proto__.addNode = function(data) {
     if (!this.children) {
 	this.children = []
     }
-    child.data.reach = child.getNodeReach();
+    child._updateNodeReach();
     this.children.push(child);
 }
 
@@ -125,8 +134,8 @@ function update(source) {
 	.on('click', click)
 	.on('contextmenu', rightclick);
         
-
-    var midPath = nodeEnter.filter(function(d) { return d.data.type; }).append('g')
+    // Filter out the root node
+    var midPath = nodeEnter.filter(function(d) { return d.parent; }).append('g')
 	.attr('class', 'midpath');
 
     // Add KPI boxes for the branches

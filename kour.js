@@ -48,7 +48,25 @@ function getCampaignResults() {
 
 function optimizeByIA() {
     var optimum = [{}, {}, {}, {}];
-    for(var depth=3; depth ; depth++) {
-    }	
+    // iterate on depth, node type, parent channel, parent message
+    for(var depth=4; depth >=0 ; depth++) {
+	branches.forEach(function(nodeType) {
+	    channels.forEach(function(parentChan) { messages.forEach(function(parentMsg) {
+		channels.forEach(function(ancestorChan) { messages.forEach(function(ancestorMsg) {
+		    var convs = rate[parentMsg + parentChan + nodeType +
+				     ancestorMsg + ancestorChan + (depth-1)]
+
+		    if (depth == 4) {
+			return {
+			    "message": undefined,
+			    "channel": undefined,
+			    "conversions": convs,
+			    "media-cost": channelDetails[parentChan].cost
+			}
+		    }
+		})})
+	    })})
+	});
+    }
 }
 
