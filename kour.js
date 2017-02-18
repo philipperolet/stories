@@ -50,23 +50,40 @@ function optimizeByIA() {
     var optimum = [{}, {}, {}, {}];
     // iterate on depth, node type, parent channel, parent message
     for(var depth=4; depth >=0 ; depth++) {
-	branches.forEach(function(nodeType) {
+	branches.forEach(function(nodeType) { branches.forEach(function(parentType) {
 	    channels.forEach(function(parentChan) { messages.forEach(function(parentMsg) {
 		channels.forEach(function(ancestorChan) { messages.forEach(function(ancestorMsg) {
-		    var convs = rate[parentMsg + parentChan + nodeType +
-				     ancestorMsg + ancestorChan + (depth-1)]
-
-		    if (depth == 4) {
-			return {
+		    var line = parentMsg + parentChan + parentType +
+			ancestorMsg + ancestorChan;
+		    var reach = rates[depth-1][line][nodeType];
+		    if (nodeType == "conversion") {
+			optimum[depth][line + nodeType] = {
 			    "message": undefined,
 			    "channel": undefined,
-			    "conversions": convs,
-			    "media-cost": channelDetails[parentChan].cost
+			    "conversionRate": reach,
+			    "mediaCost": 0
 			}
+		    }
+		    else if (depth == 4) {
+			optimum[depth][line + nodeType] = {
+			    "message": undefined,
+			    "channel": undefined,
+			    "conversionRate": 0,
+			    "mediaCost": 0
+			}
+		    }
+		    else {
+			channels.forEach(function(chan) { messages.forEach(function(msg) {
+			    var mediaCost = channelDetails[chan].cost;
+			    branchTypes.forEach(function(type) {
+				var newLine = msg + chan + nodeType + parentMsg + parentChan;
+				mediaCost += rates[depth][newLine][type] * optimum[depth+1][line + type].mediaCost;
+			    });
+			})})
 		    }
 		})})
 	    })})
-	});
+	});});
     }
 }
 

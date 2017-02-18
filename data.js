@@ -32,7 +32,7 @@ var treeData =
 	    { "name": "Level 2: B" }
 	]
     };
-var rates = {}
+var rates = [{}, {}, {}, {}]
 messages.forEach(function(message) {
     channels.forEach(function(channel) {
 	branches.forEach(function(reaction) {
@@ -41,7 +41,7 @@ messages.forEach(function(message) {
 		    for (var depth=0; depth < 4; depth++) {
 			var conv = 0.0003 * (0.5 + Math.random()),
 			    eng = 0.003 * (0.5 + Math.random());
-			rates[message + channel + reaction + prev_message + prev_channel + depth] = {
+			rates[depth][message + channel + reaction + prev_message + prev_channel] = {
 			    "conversion": conv,
 			    "engagement": eng,
 			    "negative": 1-conv-eng

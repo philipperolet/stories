@@ -67,9 +67,8 @@ root.__proto__.getNodeReach = function() {
 	this.parent.data.channel +
 	this.parent.data.type +
 	(this.parent.parent ? this.parent.parent.data.message : "none") +
-	(this.parent.parent ? this.parent.parent.data.channel : "none") +
-	this.parent.depth;
-    return Math.ceil(this.parent.data.reach * rates[line][this.data.type]);
+	(this.parent.parent ? this.parent.parent.data.channel : "none");
+    return Math.ceil(this.parent.data.reach * rates[this.parent.depth][line][this.data.type]);
 }
     
 root.__proto__.addNode = function(data) {
