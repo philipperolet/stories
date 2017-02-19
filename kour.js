@@ -46,44 +46,78 @@ function getCampaignResults() {
     };
 }
 
+var optimum = [{}, {}, {}, {}, {}];
 function optimizeByIA() {
-    var optimum = [{}, {}, {}, {}];
+
     // iterate on depth, node type, parent channel, parent message
-    for(var depth=4; depth >=0 ; depth++) {
+    for(var depth=4; depth >=0 ; depth--) {
 	branches.forEach(function(nodeType) { branches.forEach(function(parentType) {
 	    channels.forEach(function(parentChan) { messages.forEach(function(parentMsg) {
 		channels.forEach(function(ancestorChan) { messages.forEach(function(ancestorMsg) {
 		    var line = parentMsg + parentChan + parentType +
 			ancestorMsg + ancestorChan;
-		    var reach = rates[depth-1][line][nodeType];
+		    var reach = depth > 0 ? rates[depth-1][line][nodeType] : 1;
+		    
+	// Conversion nodes always yield 
 		    if (nodeType == "conversion") {
 			optimum[depth][line + nodeType] = {
-			    "message": undefined,
-			    "channel": undefined,
+			    "message": "Conversion!",
+			    "channel": "conversion",
 			    "conversionRate": reach,
-			    "mediaCost": 0
+			    "mediaCostRate": 0
 			}
 		    }
+	// Otherwise depth 4 nodes never yield
 		    else if (depth == 4) {
 			optimum[depth][line + nodeType] = {
 			    "message": undefined,
 			    "channel": undefined,
 			    "conversionRate": 0,
-			    "mediaCost": 0
+			    "mediaCostRate": 0
 			}
 		    }
+		    
+	// For all the other nodes, dyn prog
 		    else {
+			var optimalValue = 0;
 			channels.forEach(function(chan) { messages.forEach(function(msg) {
-			    var mediaCost = channelDetails[chan].cost;
-			    branchTypes.forEach(function(type) {
-				var newLine = msg + chan + nodeType + parentMsg + parentChan;
-				mediaCost += rates[depth][newLine][type] * optimum[depth+1][line + type].mediaCost;
+			    var mediaCostRate = channelDetails[chan].cost,
+			    	conversionRate = 0,
+				newLine = msg + chan + nodeType + parentMsg + parentChan;
+			    branches.forEach(function(type) {
+				mediaCostRate += rates[depth][newLine][type] * optimum[depth+1][newLine + type].mediaCostRate;
+				conversionRate += rates[depth][newLine][type] * optimum[depth+1][newLine + type].conversionRate;
 			    });
+			    var value = conversionRate * conversionRate / mediaCostRate;
+			    if (optimalValue < value) {
+				optimalValue = value;
+				optimum[depth][line + nodeType] = {
+				    "message": msg,
+				    "channel": chan,
+				    "conversionRate": conversionRate,
+				    "mediaCostRate": mediaCostRate,
+				    "nextOptimum": newLine
+				};
+			    }
 			})})
 		    }
 		})})
 	    })})
 	});});
     }
+
+    // setup the optimal path
+    function _optimalStep(node, line) {
+	optimum[node.depth][line].name = optimum[node.depth][line].message;
+	node._updateStepData(optimum[node.depth][line]);
+	if (node.children) {
+	    node.children.forEach(function(child) { _optimalStep(child, optimum[node.depth][line].nextOptimum + child.data.type); });
+	}
+    }
+    // initial line not important
+    _optimalStep(root, messages[0] + channels[0] + branches[0] + messages[0] + channels[0] + branches[1]);
+    update(root);
 }
+
+
 

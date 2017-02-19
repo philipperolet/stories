@@ -68,6 +68,7 @@ root.__proto__.getNodeReach = function() {
 	this.parent.data.type +
 	(this.parent.parent ? this.parent.parent.data.message : "none") +
 	(this.parent.parent ? this.parent.parent.data.channel : "none");
+
     return Math.ceil(this.parent.data.reach * rates[this.parent.depth][line][this.data.type]);
 }
     
@@ -145,7 +146,7 @@ function update(source) {
 	.attr('fill', 'white')
 	.attr('stroke','black');
     var kpis = midPath.select('g')
-	.append('text').attr('fill', function(d) { return branchTypes[d.data.type].textColor; })
+	.append('text').attr('fill', function(d) { return branchDetails[d.data.type].textColor; })
     kpis.append('tspan')
 	.attr('x', '-13').attr('y','-10').attr('dy',"1em")
 	.text(function(d) { return formatNumber(d.data.reach); });
@@ -161,7 +162,7 @@ function update(source) {
     // Add image labels for the branches
     midPath.append('image')
 	.attr('class', 'node branch')
-	.attr("xlink:href", function(d) { return branchTypes[d.data.type].image; })
+	.attr("xlink:href", function(d) { return branchDetails[d.data.type].image; })
 	.attr("width", ICON_SIZE/2.0).attr("height",ICON_SIZE/2.0)
 
     // Add labels for the nodes

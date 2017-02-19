@@ -8,12 +8,14 @@ var channelDetails = {
 }
 var channels = Object.keys(channelDetails);
 var messages = ["humour", "pratique", "pas_cher"];
-var branches = ["engagement", "negative", "conversion"]
-var branchTypes = {
+
+var branchDetails = {
     "conversion": {"image":"euro.png", "textColor":"green"},
     "engagement": {"image":"like.png", "textColor":"blue"},
     "negative": {"image":"minus.png", "textColor":"red"}
 }
+var branches = Object.keys(branchDetails);
+
 var INITIAL_REACH = 100000000;
 
 /* ROOT NODE DATA
@@ -41,6 +43,7 @@ messages.forEach(function(message) {
 		    for (var depth=0; depth < 4; depth++) {
 			var conv = 0.0003 * (0.5 + Math.random()),
 			    eng = 0.003 * (0.5 + Math.random());
+			if (channel == "email") conv = conv / 10;
 			rates[depth][message + channel + reaction + prev_message + prev_channel] = {
 			    "conversion": conv,
 			    "engagement": eng,
