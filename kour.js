@@ -23,8 +23,18 @@ function launchCampaign() {
     var results = getCampaignResults();
     d3.select('.results').attr("style", "display: block;");
     ['media-cost', 'cac', 'conversions'].forEach(function(kpi) {
-	d3.select('.results .'+kpi).text(formatNumber(results[kpi]));
+	animateToNumber(d3.select('.results .'+kpi), results[kpi]);
     });
+}
+function animateToNumber(selection, number) {
+    selection.transition().duration(2000)
+	    .tween("text", function(d) {
+		var that = d3.select(this),
+		    i = d3.interpolateNumber(0, number);
+		return function(t) {
+		    that.text(formatNumber(i(t)));
+		};
+	    });
 }
 
 function getCampaignResults() {

@@ -141,8 +141,8 @@ function update(source) {
     // Add KPI boxes for the branches
     midPath.append('g')
 	.append('rect')
-	.attr('width', 30).attr('height', 24)
-	.attr('x',-15).attr('y', -10)
+	.attr('width', 48).attr('height', 28)
+	.attr('x',-22).attr('y', -12)
 	.attr('fill', 'white')
 	.attr('stroke','black');
     var kpis = midPath.select('g')
@@ -154,7 +154,7 @@ function update(source) {
 	.attr('x', '-13').attr('y','-10').attr('dy',"2em")
 	.text(function(d) {
 	    var ctr = 100*d.data.reach / d.parent.data.reach;
-	    return ctr.toPrecision(3)+"%";
+	    return (ctr < 99.5 ? ctr.toPrecision(2) : ctr.toPrecision(3)) +"%";
 	});
 	
     
@@ -267,17 +267,15 @@ function update(source) {
 function formatNumber(num) {
     // Formats a number with K for 1000s, M for millions, with a precision of 2
     switch (Math.floor(Math.log10(num))) {
-    case -2:
-    case -1:
-    case 0:
-    case 1:
-    case 2:
-	return num;
     case 3:
     case 4:
     case 5:
 	return (num/1000).toPrecision(3) + "K";
-    default:
+    case 6:
+    case 7:
+    case 8:
 	return (num/1000000).toPrecision(3) + "M";
+    default:
+	return num.toPrecision(3);	
     }
 }
