@@ -17,19 +17,18 @@ OK Résultats CAC / Reach / Dépense média sur un run
 
 Doable
 --
+### Sûr
+(0.5) Animation campagne : chiffres défilants + "retry" (on click, hide camp. & allow modif)
 
-- IA : Calcul du résultat optimisé
-- IA : multiples essais randoms sur le parcours défini avant résultat
-- Animation campagne : chiffres défilants
-- Animation IA : défilement des images lors des essais
-- Résultats en graphes
-- bouton retry
-- Ajout de règles business FB & autres
-- Plusieurs profils
+(2) IA : Calcul du résultat optimisé sur conv -- à partir de l'arbre existant
+(1) IA : multiples essais randoms sur le parcours défini avant résultat
+(0.5) Légende : "parcours sur le personna image + caractéristiquee" + pictos des créas humour & co.
 
+### TBD
+1. (2) Résultats en graphes suivis avec le temps
 
+2. Pour le négatif, splitter entre "no reaction" et "matching issue"
 
+3. (opt) Afficher un "coût de convergence" = coût de l'IA pour converger = distance d'arbre * conversions
 
-- Résultats suivis avec le temps
-- 1 courbe Manuelle, 1 courbe IA
-- Pour le négatif, splitter entre "no reaction" et "matching issue"
+3.opt (2) Plusieurs profils 

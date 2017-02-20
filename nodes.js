@@ -149,14 +149,17 @@ function update(source) {
 	.append('text').attr('fill', function(d) { return branchDetails[d.data.type].textColor; })
     kpis.append('tspan')
 	.attr('x', '-13').attr('y','-10').attr('dy',"1em")
+	.attr('class', 'reach')
 	.text(function(d) { return formatNumber(d.data.reach); });
     kpis.append('tspan')
 	.attr('x', '-13').attr('y','-10').attr('dy',"2em")
+    	.attr('class', 'percent')
+	.attr('style', 'display: none;')
 	.text(function(d) {
 	    var ctr = 100*d.data.reach / d.parent.data.reach;
 	    return (ctr < 99.5 ? ctr.toPrecision(2) : ctr.toPrecision(3)) +"%";
 	});
-	
+
     
 
     // Add image labels for the branches

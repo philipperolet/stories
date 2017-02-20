@@ -16,6 +16,9 @@ function launchCampaign() {
     // display KPI boxes
     var midpaths = d3.selectAll("g.midpath");
     midpaths.select('g').attr("style","display: block;");
+    animateToNumber(midpaths.select('tspan.reach'), function(d) { return d.data.reach;})
+	.on('end', function() { midpaths.select('tspan.percent').attr("style","display: block;"); });
+
     midpaths.select('image').attr("style","display: none;");
     d3.selectAll("image.node").attr("data-toggle","").on('click', null).on('contextmenu', null);
 
@@ -23,14 +26,14 @@ function launchCampaign() {
     var results = getCampaignResults();
     d3.select('.results').attr("style", "display: block;");
     ['media-cost', 'cac', 'conversions'].forEach(function(kpi) {
-	animateToNumber(d3.select('.results .'+kpi), results[kpi]);
+	animateToNumber(d3.select('.results .'+kpi), function(d) { return results[kpi]; });
     });
 }
-function animateToNumber(selection, number) {
-    selection.transition().duration(2000)
+function animateToNumber(selection, transfNumber, percent) {
+    return selection.transition().duration(1500)
 	    .tween("text", function(d) {
 		var that = d3.select(this),
-		    i = d3.interpolateNumber(0, number);
+		    i = d3.interpolateNumber(0, transfNumber(d));
 		return function(t) {
 		    that.text(formatNumber(i(t)));
 		};
