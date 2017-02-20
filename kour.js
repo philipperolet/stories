@@ -19,8 +19,12 @@ function launchCampaign() {
     animateToNumber(midpaths.select('tspan.reach'), function(d) { return d.data.reach;})
 	.on('end', function() { midpaths.select('tspan.percent').attr("style","display: block;"); });
 
+    // deactivate clicks
     midpaths.select('image').attr("style","display: none;");
-    d3.selectAll("image.node").attr("data-toggle","").on('click', null).on('contextmenu', null);
+    d3.selectAll("image.node")
+	.attr("data-toggle","")
+	.on('click', null)
+	.on('contextmenu', null);
 
     // Display results
     var results = getCampaignResults();
@@ -28,8 +32,32 @@ function launchCampaign() {
     ['media-cost', 'cac', 'conversions'].forEach(function(kpi) {
 	animateToNumber(d3.select('.results .'+kpi), function(d) { return results[kpi]; });
     });
+
+    d3.select('button.launch').attr("disabled",true);
 }
-function animateToNumber(selection, transfNumber, percent) {
+
+function retry() {
+    var midpaths = d3.selectAll("g.midpath");
+    midpaths.select('g').attr("style","display: none;");
+    d3.select('.results').attr("style", "display: none;");
+    midpaths.select('image').attr("style","display: block;");
+
+    var treeData = treemap(root);
+    var nodes = treeData.descendants();
+    nodes.forEach(function(node) {
+	if (node.data.channel == "stop") {
+	    node.data.channel = "new";
+	    node.data.name = NOUV_ETAPE;
+	} else if (node.children && node.children.length == 1 && node.children[0].data.type == "conversion") {
+	    node.children = null; 
+	}
+    });
+    
+    update(root);
+    d3.select('button.launch').attr("disabled", null);
+}
+
+function animateToNumber(selection, transfNumber) {
     return selection.transition().duration(1500)
 	    .tween("text", function(d) {
 		var that = d3.select(this),

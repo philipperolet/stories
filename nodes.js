@@ -128,11 +128,6 @@ function update(source) {
 	.attr('class', 'node')
 	.attr("x",-ICON_SIZE/2).attr("y",-ICON_SIZE)
 	.attr("width", ICON_SIZE).attr("height",ICON_SIZE)
-	.filter(function(d) { return d.data.type != "conversion"; })
-	.attr("data-toggle","modal")
-	.attr("data-target","#myModal")
-	.on('click', click)
-	.on('contextmenu', rightclick);
         
     // Filter out the root node
     var midPath = nodeEnter.filter(function(d) { return d.parent; }).append('g')
@@ -180,7 +175,13 @@ function update(source) {
     var nodeUpdate = nodeEnter.merge(node);
     
     nodeUpdate.select("text.label").text(function(d) { return d.data.name });
-    nodeUpdate.select("image").attr("xlink:href",function(d) { return d.data.channel+".png"; });
+    nodeUpdate.select("image").attr("xlink:href",function(d) { return d.data.channel+".png"; })
+	.filter(function(d) { return d.data.type != "conversion"; })
+	.attr("data-toggle","modal")
+	.attr("data-target","#myModal")
+	.on('click', click)
+	.on('contextmenu', rightclick);
+
     nodeUpdate.select("g")
 	.attr("transform", function(d) {
 	    return "translate("+ (-180*0.5) + "," + (d.parent ? (d.parent.x - d.x)*0.5 : 0) + ")";
@@ -257,12 +258,17 @@ function update(source) {
 	update(d);
     }
     function rightclick(d) {
-	if (d.children) {
-	} else {
-	    d.parent.children = null;
-	    d3.event.preventDefault();
+	d3.event.preventDefault();
+	// if the node has been set
+	if (channels.indexOf(d.data.channel) >= 0 &&
+	    messages.indexOf(d.data.message) >=0 &&
+	    confirm("Réinitialiser cette étape? (supprime les étapes filles)")) {
+	    d.data.channel = "new";
+	    d.data.message = NOUV_ETAPE;
+	    d.data.name = NOUV_ETAPE;
+	    d.children = null;
 	}
-	update(d.parent);
+	update(d);
     }
 
 }
@@ -270,6 +276,12 @@ function update(source) {
 function formatNumber(num) {
     // Formats a number with K for 1000s, M for millions, with a precision of 2
     switch (Math.floor(Math.log10(num))) {
+    case 0:
+	return num.toPrecision(1);
+    case 1:
+	return num.toPrecision(2);
+    case 2:
+	return num.toPrecision(3);
     case 3:
     case 4:
     case 5:

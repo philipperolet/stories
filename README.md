@@ -19,10 +19,13 @@ Doable
 --
 ### Sûr
 (0.5) Animation campagne : chiffres défilants + "retry" (on click, hide camp. & allow modif)
+(0.2) Fixer le bug du "collapse"
 
 (2) IA : Calcul du résultat optimisé sur conv -- à partir de l'arbre existant
 (1) IA : multiples essais randoms sur le parcours défini avant résultat
 (0.5) Légende : "parcours sur le personna image + caractéristiquee" + pictos des créas humour & co.
+Bouton droit : relancer; expliquer les eurs / like / neg / unreached
+
 
 ### TBD
 1. (2) Résultats en graphes suivis avec le temps
