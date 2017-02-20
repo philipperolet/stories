@@ -148,17 +148,40 @@ function optimizeByIA() {
     }
 
     // setup the optimal path
+    
     function _optimalStep(node, line) {
-	optimum[node.depth][line].name = optimum[node.depth][line].message;
-	node._updateStepData(optimum[node.depth][line]);
-	if (node.children) {
-	    node.children.forEach(function(child) { _optimalStep(child, optimum[node.depth][line].nextOptimum + child.data.type); });
+	/* Sets the optimal message for node N with previous steps stored in line */
+	animateSubtree(node, Math.floor(Math.random() * 3) + 2, function() {
+	    optimum[node.depth][line].name = optimum[node.depth][line].message;
+	    node._updateStepData(optimum[node.depth][line]);
+	    update(node);
+	    if (node.children) {
+		for (var chInd = 0; chInd < node.children.length; chInd++) {
+		    var child = node.children[chInd];
+		    _optimalStep(child, optimum[node.depth][line].nextOptimum + child.data.type);
+		}
+	    }
+	});
+    }
+
+
+    function animateSubtree(node, iterations, afterAnimation) {
+	if (iterations == 0) { afterAnimation();}
+	else {
+	    node.descendants().concat(node).forEach(function(nd) {
+		nd.data.channel = channels[Math.floor(Math.random()*channels.length)];
+		nd.data.message = messages[Math.floor(Math.random()*messages.length)];
+		nd.data.name = nd.data.message;
+	    });
+	    update(node);
+	    sleep(100).then(function() { animateSubtree(node, iterations - 1, afterAnimation); })
 	}
     }
-    // initial line not important
+    // initial line
     _optimalStep(root, messages[0] + channels[0] + branches[0] + messages[0] + channels[0] + branches[1]);
-    update(root);
+    
 }
 
-
-
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
