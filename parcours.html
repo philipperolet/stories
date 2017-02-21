@@ -52,17 +52,24 @@
 	      <button type="button" class="btn btn-primary launch" onclick="launchCampaign();">
 		<span class="glyphicon glyphicon-star" aria-hidden="true"/> Lancer la campagne
 	      </button>
-	      <button type="button" class="btn btn-info" onclick="optimizeByIA();">
+	      <button type="button" class="btn btn-info optim" onclick="optimizeByIA();">
 		<span class="glyphicon glyphicon-signal" aria-hidden="true"/> Optimiser avec I.A.
 	      </button>
 	      <div class="results">
 		<h3>R&eacute;sultats</h3>
-		<p>Co&ucirc;ts Media : <span class="media-cost"></span>&euro;</p>
+		<p>Co&ucirc;ts Campagne : <span class="media-cost"></span>&euro;</p>
 		<p>Conversions : <span class="conversions"></span> pers.</p>
 		<p>CAC : <span class="cac"></span>&euro;</p>
+		<div class="results-ia">
+		  <h4>Performance IA</h4>
+		  <p>Temps d'apprentissage IA : <span class="learning-time"></span> jours</p>
+		  <p>Gains en conversion : <span class="conversion-gain"></span> pers.</p>
+		  <p>Gains en CAC : <span class="cac-gain"></span>% cheaper</p>
+		  <p class="note">La performance de l'IA est calculée par rapport au dernier parcours que vous avez réalisé avant de cliquer sur "Optimiser par IA"</p>
+		</div>
 		<button type="button" class="btn btn-primary retry" onclick="retry();">
 		  <span class="glyphicon glyphicon-repeat" aria-hidden="true"/> Réessayer
-		</button>
+		</button>		
 	      </div>
 	  </div>
 	</div>

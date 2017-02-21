@@ -50,3 +50,7 @@ body {
 .results {
     display: none;
 }
+
+.results-ia {
+    display: none;
+}
