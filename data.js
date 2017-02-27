@@ -34,6 +34,7 @@ var treeData =
 	    { "name": "Level 2: B" }
 	]
     };
+
 var rates = [{}, {}, {}, {}]
 messages.forEach(function(message) {
     channels.forEach(function(channel) {

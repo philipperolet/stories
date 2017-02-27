@@ -179,6 +179,7 @@ function update(source) {
 	.filter(function(d) { return d.data.type != "conversion"; })
 	.attr("data-toggle","modal")
 	.attr("data-target","#myModal")
+    	.attr("data-remote","")
 	.on('click', click)
 	.on('contextmenu', rightclick);
 
