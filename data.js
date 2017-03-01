@@ -42,14 +42,9 @@ messages.forEach(function(message) {
 	    messages.concat(["none"]).forEach(function(prev_message) {
 		channels.concat(["none"]).forEach(function(prev_channel) {
 		    for (var depth=0; depth < 4; depth++) {
-			var conv = 0.0003 * (0.5 + Math.random()),
-			    eng = 0.003 * (0.5 + Math.random());
-			if (channel == "email") conv = conv / 10;
-			rates[depth][message + channel + reaction + prev_message + prev_channel] = {
-			    "conversion": conv,
-			    "engagement": eng,
-			    "negative": 1-conv-eng
-			};
+			rate_line = message + channel + reaction + prev_message + prev_channel;
+			rates[depth][rate_line] = getRates(depth, message, channel,
+							   reaction, prev_message, prev_channel);
 		    }
 		});
 	    });
@@ -57,6 +52,17 @@ messages.forEach(function(message) {
     });
 });
 
-	
-		    
-	    
+function getRates(depth, message, channel,
+		  reaction, prev_message, prev_channel) {
+    var conv = 0.9 + (Math.random()*0.2);
+    var eng = 0.9 + (Math.random()*0.2);
+    conv *= 0.0003;
+    eng *= 0.003;
+    if (channel == "email") conv = conv / 10;
+    return {
+	"conversion": conv,
+	"engagement": eng,
+	"negative": 1-conv-eng
+    };
+}
+
