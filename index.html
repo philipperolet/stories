@@ -57,15 +57,15 @@
 	      </button>
 	      <div class="results">
 		<h3>R&eacute;sultats</h3>
-		<p>Co&ucirc;ts Campagne : <span class="media-cost"></span>&euro;</p>
 		<p>Conversions : <span class="conversions"></span> pers.</p>
-		<p>CAC : <span class="cac"></span>&euro;</p>
+		<p>Co&ucirc;ts Campagne : <span class="media-cost"></span>&euro; (CAC : <span class="cac"></span>&euro;)</p>
+		<p>BNC : <span class="bnc"></span>&euro;</p>
 		<div class="results-ia">
 		  <h4>Performance IA</h4>
 		  <p>Temps d'apprentissage IA : <span class="learning-time"></span> jours</p>
 		  <p>Gains en conversion : <span class="conversion-gain"></span> pers.</p>
-		  <p>Gains en CAC : <span class="cac-gain"></span>% cheaper</p>
-		  <p class="note">La performance de l'IA est calculée par rapport au dernier parcours que vous avez réalisé avant de cliquer sur "Optimiser par IA"</p>
+		  <p>Gains en CAC : <span class="cac-gain"></span>% moins cher</p>
+		  <!--p class="note">La performance de l'IA est calculée par rapport au dernier parcours que vous avez réalisé avant de cliquer sur "Optimiser par IA"</p-->
 		</div>
 		<button type="button" class="btn btn-primary retry" onclick="retry();">
 		  <span class="glyphicon glyphicon-repeat" aria-hidden="true"/> Réessayer
@@ -89,7 +89,8 @@
 	    <label for="sel1">Canal:</label>
 	    <select class="form-control" id="canal">
 	      <option value="display">Display</option>
-	      <option value="facebook">Facebook</option>
+	      <option value="video">Vidéo</option>
+	      <option value="sms">SMS</option>
 	      <option value="email">E-mail</option>
 	    </select>
 	  </div>
@@ -98,9 +99,8 @@
 	  <div class="form-group">
 	    <label for="sel1">Message:</label>
 	    <select class="form-control" id="message">
-	      <option value="humour">Humour</option>
-	      <option value="pratique">Pratique</option>
-	      <option value="pas_cher">Pas cher</option>
+	      <option value="notoriete">Notoriété</option>
+	      <option value="achat">Achat</option>
 	    </select>
 	  </div>
 	</div>

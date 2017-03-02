@@ -33,7 +33,7 @@ function launchCampaign() {
     var results = getCampaignResults();
 
     d3.select('.results').attr("style", "display: block;");
-    ['media-cost', 'cac', 'conversions'].forEach(function(kpi) {
+    ['media-cost', 'cac', 'conversions', 'bnc'].forEach(function(kpi) {
 	animateToNumber(d3.select('.results .'+kpi), function(d) { return results[kpi]; });
     });
     
@@ -71,10 +71,12 @@ function getCampaignResults() {
 	}
     });
     cac = mediaCost / conversions;
+    var bnc = (MARGE_UNITAIRE - cac) * conversions;
     return {
 	"conversions": conversions,
 	"cac": cac.toPrecision(3),
-	"media-cost": mediaCost
+	"media-cost": mediaCost,
+	"bnc": bnc
     };
 }
 
@@ -115,53 +117,57 @@ function optimizeByIA() {
 	branches.forEach(function(nodeType) { branches.forEach(function(parentType) {
 	    channels.forEach(function(parentChan) { messages.forEach(function(parentMsg) {
 		channels.forEach(function(ancestorChan) { messages.forEach(function(ancestorMsg) {
-		    var line = parentMsg + parentChan + parentType +
-			ancestorMsg + ancestorChan;
-		    var reach = depth > 0 ? rates[depth-1][line][nodeType] : 1;
-		    
-	// Conversion nodes always yield 
-		    if (nodeType == "conversion") {
-			optimum[depth][line + nodeType] = {
-			    "message": "Conversion!",
-			    "channel": "conversion",
-			    "conversionRate": reach,
-			    "mediaCostRate": 0
-			}
-		    }
-	// Otherwise depth 4 nodes never yield
-		    else if (depth == 4) {
-			optimum[depth][line + nodeType] = {
-			    "message": undefined,
-			    "channel": undefined,
-			    "conversionRate": 0,
-			    "mediaCostRate": 0
-			}
-		    }
-		    
-	// For all the other nodes, dyn prog
-		    else {
-			var optimalValue = 0;
-			channels.forEach(function(chan) { messages.forEach(function(msg) {
-			    var mediaCostRate = channelDetails[chan].cost,
-			    	conversionRate = 0,
-				newLine = msg + chan + nodeType + parentMsg + parentChan;
-			    branches.forEach(function(type) {
-				mediaCostRate += rates[depth][newLine][type] * optimum[depth+1][newLine + type].mediaCostRate;
-				conversionRate += rates[depth][newLine][type] * optimum[depth+1][newLine + type].conversionRate;
-			    });
-			    var value = conversionRate * conversionRate / mediaCostRate;
-			    if (optimalValue < value) {
-				optimalValue = value;
-				optimum[depth][line + nodeType] = {
-				    "message": msg,
-				    "channel": chan,
-				    "conversionRate": conversionRate,
-				    "mediaCostRate": mediaCostRate,
-				    "nextOptimum": newLine
-				};
+		    [0,1,2].forEach(function(email_nb) { [0,1,2].forEach(function(sms_nb) {
+			var line = parentMsg + parentChan + parentType +
+			    ancestorMsg + ancestorChan + email_nb + sms_nb;
+			var reach = depth > 0 ? rates[depth-1][line][nodeType] : 1;
+			
+			// Conversion nodes always yield 
+			if (nodeType == "conversion") {
+			    optimum[depth][line + nodeType] = {
+				"message": "Conversion!",
+				"channel": "conversion",
+				"conversionRate": reach,
+				"mediaCostRate": 0
 			    }
-			})})
-		    }
+			}
+			// Otherwise depth 4 nodes never yield
+			else if (depth == 4) {
+			    optimum[depth][line + nodeType] = {
+				"message": undefined,
+				"channel": undefined,
+				"conversionRate": 0,
+				"mediaCostRate": 0
+			    }
+			}
+			
+			// For all the other nodes, dyn prog
+			else {
+			    var optimalValue = 0;
+			    channels.forEach(function(chan) { messages.forEach(function(msg) {
+				var new_email_nb = Math.min(2, (ancestorChan == "email") ? email_nb + 1 : email_nb);
+				var new_sms_nb = Math.min(2, (ancestorChan == "sms") ? sms_nb + 1 : sms_nb);
+				var mediaCostRate = channelDetails[chan].cost,
+			    	    conversionRate = 0,
+				    newLine = msg + chan + nodeType + parentMsg + parentChan + new_email_nb + new_sms_nb;
+				branches.forEach(function(type) {
+				    mediaCostRate += rates[depth][newLine][type] * optimum[depth+1][newLine + type].mediaCostRate;
+				    conversionRate += rates[depth][newLine][type] * optimum[depth+1][newLine + type].conversionRate;
+				});
+				var value = conversionRate * (MARGE_UNITAIRE - mediaCostRate/conversionRate);
+				if (optimalValue < value) {
+				    optimalValue = value;
+				    optimum[depth][line + nodeType] = {
+					"message": msg,
+					"channel": chan,
+					"conversionRate": conversionRate,
+					"mediaCostRate": mediaCostRate,
+					"nextOptimum": newLine
+				    };
+				}
+			    })})
+			}
+		    })})
 		})})
 	    })})
 	});});
@@ -177,9 +183,15 @@ function optimizeByIA() {
 		node._updateStepData(optimum[node.depth][line]);
 		update(node);
 		if (node.children) {
-		    for (var chInd = 0; chInd < node.children.length; chInd++) {
-			var child = node.children[chInd];
-			_optimalStep(child, optimum[node.depth][line].nextOptimum + child.data.type).then(() => resolve());
+		    if (node.children.length == 1) {
+			_optimalStep(node.children[0], optimum[node.depth][line].nextOptimum + node.children[0].data.type).then(() => resolve());
+		    }
+		    else {
+			_optimalStep(node.children[0], optimum[node.depth][line].nextOptimum + node.children[0].data.type).then(function() {
+			    _optimalStep(node.children[1], optimum[node.depth][line].nextOptimum + node.children[1].data.type).then(function() {
+				_optimalStep(node.children[2], optimum[node.depth][line].nextOptimum + node.children[2].data.type).then(() => resolve());
+			    });
+			});
 		    }
 		} else { resolve();}
 	    });
@@ -197,26 +209,26 @@ function optimizeByIA() {
 		    nd.data.name = nd.data.message;
 		});
 		update(node);
-		sleep(100).then(function() { animateSubtree(node, iterations - 1).then(() => resolve()) })
+		sleep(300).then(function() { animateSubtree(node, iterations - 1).then(() => resolve()) })
 	    }
 	});
     }
     // initial line
-    _optimalStep(root, messages[0] + channels[0] + branches[0] + messages[0] + channels[0] + branches[1])
+    _optimalStep(root, messages[0] + channels[0] + branches[0] + messages[0] + channels[0] + "00" + branches[1])
 	.then(function() { console.log('Launching'); launchCampaign() });
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function animateToNumber(selection, transfNumber) {
     return selection.transition().duration(1500)
-	    .tween("text", function(d) {
-		var that = d3.select(this),
-		    i = d3.interpolateNumber(0, transfNumber(d));
-		return function(t) {
-		    that.text(formatNumber(i(t)));
-		};
-	    });
+	.tween("text", function(d) {
+	    var that = d3.select(this),
+		i = d3.interpolateNumber(0, transfNumber(d));
+	    return function(t) {
+		that.text(formatNumber(i(t)));
+	    };
+	});
 }

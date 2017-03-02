@@ -67,11 +67,28 @@ root.__proto__.getNodeReach = function() {
 	this.parent.data.channel +
 	this.parent.data.type +
 	(this.parent.parent ? this.parent.parent.data.message : "none") +
-	(this.parent.parent ? this.parent.parent.data.channel : "none");
+	(this.parent.parent ? this.parent.parent.data.channel : "none") +
+	this.getPreviousEmailsAndSmsNumber();
 
-    return Math.ceil(this.parent.data.reach * rates[this.parent.depth][line][this.data.type]);
+    return Math.round(this.parent.data.reach * rates[this.parent.depth][line][this.data.type]);
 }
-    
+
+
+root.__proto__.getPreviousEmailsAndSmsNumber = function () {
+    var email_nb = 0, sms_nb = 0;
+    if (!this.parent) return "00";
+    var grandparent = this.parent.parent;
+    if (grandparent) {
+	if (grandparent.data.channel == "email") email_nb++;
+	if (grandparent.data.channel == "sms") sms_nb++;
+	if (grandparent.parent) {
+	    if (grandparent.parent.data.channel == "email") email_nb++;
+	    if (grandparent.parent.data.channel == "sms") sms_nb++;
+	}
+    }
+    return ""+ email_nb + sms_nb;
+}
+
 root.__proto__.addNode = function(data) {
     child = d3.hierarchy(data);
     child.parent = this;
