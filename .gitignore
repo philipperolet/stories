@@ -59,3 +59,4 @@ Thumbs.db
 # Other #
 #########
 node_modules/
+static/
