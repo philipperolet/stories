@@ -12,6 +12,7 @@ var margin = {top: 0, right: 90, bottom: -20, left: 30},
 var svg = d3.select("div#kour").append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
+    .attr("class", "parcours")
     .append("g")
     .attr("transform", "translate("
           + margin.left + "," + margin.top + ")");
