@@ -27,13 +27,17 @@ OK Résultats CAC / Reach / Dépense média sur un run
 
 (0.1) mettre à dispo le truc online
 (0.5) Règles
-
+(0.5) Bug IA : parcours stoppé
 Doable
 --
-### Sûr
 
-(0.5) Bug IA : parcours stoppé
-(0.5) Improve IA : pas full parcours
+### Now
+(0.1) Lancer camp -- pas de rappel sur perf I.A.
+(0.1) Changer la mesure de jours / de perf (ROI)
+### Sûr
+(0.5) 
+(0.5) faire varier les canaux / messages selon les branches
+
 (0.5) Légende : "parcours sur le personna image + caractéristiquee" + pictos des créas humour & co.
 Bouton droit : relancer; expliquer les eurs / like / neg / unreached
 

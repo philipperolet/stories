@@ -2,7 +2,7 @@
 // not been clicked
 var resultsWithoutIA = null; 
 
-function launchCampaign() {
+function launchCampaign(manualLaunch) {
     // Change new nodes into "end" nodes and add conversion boxes for end nodes
     var treeData = treemap(root);
     var nodes = treeData.descendants();
@@ -33,14 +33,14 @@ function launchCampaign() {
     var results = getCampaignResults();
 
     d3.select('.results').attr("style", "display: block;");
-    ['media-cost', 'cac', 'conversions', 'bnc'].forEach(function(kpi) {
+    ['media-cost', 'cac', 'conversions', 'roi'].forEach(function(kpi) {
 	animateToNumber(d3.select('.results .'+kpi), function(d) { return results[kpi]; });
     });
     
-    if (resultsWithoutIA) {
+    if (!manualLaunch && resultsWithoutIA) {
 	var iaPerf = getIAPerf(results);
 	d3.select('.results-ia').attr("style", "display: block;");
-	['learning-time', 'conversion-gain', 'cac-gain'].forEach(function(kpi) {
+	['learning-time', 'conversion-gain', 'roi-gain'].forEach(function(kpi) {
 	    animateToNumber(d3.select('.results-ia .'+kpi), function(d) { return iaPerf[kpi]; });
 	});
     }
@@ -51,11 +51,11 @@ function launchCampaign() {
 }
 
 function getIAPerf(resultsWithIA) {
-    var learningTime = Math.floor(- 10 * Math.log((resultsWithoutIA["conversions"]/resultsWithoutIA["cac"])/(resultsWithIA["conversions"]/resultsWithIA["cac"])));
+    var learningTime = Math.floor(5 * (Math.log(1 + (resultsWithIA["roi"] - resultsWithoutIA["roi"])/1000000)));
     return {
 	"learning-time": learningTime,
 	"conversion-gain": resultsWithIA["conversions"] - resultsWithoutIA["conversions"],
-	"cac-gain": 100*resultsWithIA["cac"]/resultsWithoutIA["cac"]
+	"roi-gain": resultsWithIA["roi"] - resultsWithoutIA["roi"]
     };
 }
 
@@ -71,12 +71,12 @@ function getCampaignResults() {
 	}
     });
     cac = mediaCost / conversions;
-    var bnc = (MARGE_UNITAIRE - cac) * conversions;
+    var roi = (MARGE_UNITAIRE - cac) * conversions;
     return {
 	"conversions": conversions,
 	"cac": cac.toPrecision(3),
 	"media-cost": mediaCost,
-	"bnc": bnc
+	"roi": roi
     };
 }
 
@@ -166,7 +166,6 @@ function optimizeByIA() {
 		conversionRate = 0,
 		newLine = msg + chan + childType + nodeMsg + nodeChan + email_nb + sms_nb;
 	    branches.forEach(function(type) {
-		if (depth==-1) console.log(depth, newLine, type);
 		mediaCostRate += (rates[depth+1][newLine][type] * optimum[depth+1][newLine][type].mediaCostRate);
 		conversionRate += (rates[depth+1][newLine][type] * optimum[depth+1][newLine][type].conversionRate);
 	    });
