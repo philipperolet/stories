@@ -2,9 +2,9 @@ var ICON_SIZE = 20;
 var currentNode = null;
 
 // Set the dimensions and margins of the diagram
-var margin = {top: -20, right: 90, bottom: -20, left: 30},
+var margin = {top: 0, right: 90, bottom: -20, left: 30},
     width = 960 - margin.left - margin.right,
-    height = 700 - margin.top - margin.bottom;
+    height = 920 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
@@ -23,10 +23,21 @@ var i = 0,
 // declares a tree layout and assigns the size
 var treemap = d3.tree().size([height, width]);
 
+    
+
 // Assigns parent, children, height, depth
 root = d3.hierarchy(treeData, function(d) { return d.children; });
 root.x0 = height / 2;
 root.y0 = 0;
+
+function updateSvgSize(height) {
+    //svg = d3.select("div#kour svg")
+	//.attr("height", height + margin.top + margin.bottom);
+    root.x0 = height / 2;
+    //treemap = d3.tree().size([height, width]);
+    update(root);
+}
+
 
 // Adds a few functions to nodes object
 root.__proto__.updateStep = function() {
@@ -44,6 +55,8 @@ root.__proto__._updateStepData = function(stepData) {
     this.data.message = stepData.message;
     this._children = null;
     if (!(this.children) && this.depth < 3 && this.data.type != "conversion") {
+	svgHeight = d3.select("div#kour svg").attr("height");
+	if (this.depth == 2 && svgHeight < 700) updateSvgSize(2 * svgHeight);
 	this.addNode({"name": NOUV_ETAPE, "channel": "new", "type": "negative"});	
         this.addNode({"name": NOUV_ETAPE, "channel": "new", "type":"engagement"});
 	this.addNode({"name": "Conversion!", "channel": "conversion", "type":"conversion"});

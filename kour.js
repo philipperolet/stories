@@ -221,7 +221,7 @@ function optimizeByIA() {
 		    nd.data.name = nd.data.message;
 		});
 		update(node);
-		sleep(300).then(function() { animateSubtree(node, iterations - 1).then(() => resolve()) })
+		sleep(50).then(function() { animateSubtree(node, iterations - 1).then(() => resolve()) })
 	    }
 	});
     }
