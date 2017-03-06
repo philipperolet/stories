@@ -9,9 +9,9 @@ var channelDetails = {
 }
 var channels = Object.keys(channelDetails);
 
-var messagesDetails = {"notoriete": {"name": "Notoriété"},
+var messageDetails = {"notoriete": {"name": "Notoriété"},
 		       "achat": {"name": "Achat"}};
-var messages = Object.keys(messagesDetails);
+var messages = Object.keys(messageDetails);
 
 var branchDetails = {
     "conversion": {"image":"euro.png", "textColor":"green"},
@@ -45,7 +45,7 @@ messages.forEach(function(message) {
 	branches.forEach(function(reaction) {
 	    messages.concat(["none"]).forEach(function(prev_message) {
 		channels.concat(["none"]).forEach(function(prev_channel) {
-		    for (var nb_mail = 0; nb_mail < 3; nb_mail++) { // nb total de mails envoyés jusqu'alors sans current channel
+		    for (var nb_mail = 0; nb_mail < 3; nb_mail++) { // nb total de mails envoyés jusqu'alors sans compter ce noeud et son parent
 			for (var nb_sms = 0; nb_sms < 3; nb_sms++) { // idem sms
 			    for (var depth=0; depth < 4; depth++) {
 				rate_line = message + channel + reaction + prev_message + prev_channel+nb_mail+nb_sms;
@@ -64,8 +64,8 @@ messages.forEach(function(message) {
 function getRates(depth, message, channel,
 		  reaction, prev_message, prev_channel, nb_mail, nb_sms) {
     var FAVOURED_MESSAGE_UPLIFT = 0.3;
-    var conv = channelDetails[channel]['conversion'] * (0.9 + (Math.random()*0.2));
-    var eng = channelDetails[channel]['engagement'] * (0.9 + (Math.random()*0.2));
+    var conv = channelDetails[channel]['conversion'];// * (0.9 + (Math.random()*0.2));
+    var eng = channelDetails[channel]['engagement'];// * (0.9 + (Math.random()*0.2));
     if (message == channelDetails[channel]['favoured_message']) {
 	conv *= (1 + FAVOURED_MESSAGE_UPLIFT * 1.25);
 	eng *= (1 + FAVOURED_MESSAGE_UPLIFT);
@@ -74,6 +74,7 @@ function getRates(depth, message, channel,
 	conv *= (1 - FAVOURED_MESSAGE_UPLIFT * 1.25);
 	eng *= (1 - FAVOURED_MESSAGE_UPLIFT);
     }
+    if (depth >0) {
     if (message == prev_message) {
 	conv /= 2;
 	eng /=2;
@@ -126,6 +127,7 @@ function getRates(depth, message, channel,
 	    conv /= 10;
 	    eng /= 10;
 	}
+    }
     }
     return {
 	"conversion": conv,

@@ -32,7 +32,7 @@ root.y0 = 0;
 root.__proto__.updateStep = function() {
     this._updateStepData({
 	"channel": d3.select("#canal").property('value'),
-	"name": d3.select("#message").property('value'),
+	"name": messageDetails[d3.select("#message").property('value')].name,
 	"message": d3.select("#message").property('value')
     });
     update(this); 
@@ -68,7 +68,7 @@ root.__proto__.getNodeReach = function() {
 	this.parent.data.type +
 	(this.parent.parent ? this.parent.parent.data.message : "none") +
 	(this.parent.parent ? this.parent.parent.data.channel : "none") +
-	this.getPreviousEmailsAndSmsNumber();
+	this.parent.getPreviousEmailsAndSmsNumber();
 
     return Math.round(this.parent.data.reach * rates[this.parent.depth][line][this.data.type]);
 }
@@ -101,7 +101,7 @@ root.__proto__.addNode = function(data) {
     this.children.push(child);
 }
 
-// Collapse the node and all it's children
+// Collapse the node and all its children
 root.__proto__.collapse = function () {
     if(this.children) {
 	this._children = this.children;
@@ -295,7 +295,6 @@ function formatNumber(num) {
     // Formats a number with K for 1000s, M for millions, with a precision of 2
     switch (Math.floor(Math.log10(num))) {
     case 0:
-	return num.toPrecision(1);
     case 1:
 	return num.toPrecision(2);
     case 2:

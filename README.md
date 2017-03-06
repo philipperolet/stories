@@ -26,11 +26,12 @@ OK Résultats CAC / Reach / Dépense média sur un run
 (0.1) alerte if refresh / close
 
 (0.1) mettre à dispo le truc online
+(0.5) Règles
 
 Doable
 --
 ### Sûr
-(0.5) Règles
+
 (0.5) Bug IA : parcours stoppé
 (0.5) Improve IA : pas full parcours
 (0.5) Légende : "parcours sur le personna image + caractéristiquee" + pictos des créas humour & co.
