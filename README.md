@@ -1,4 +1,8 @@
 # Kour
+Règles
+==
+### 
+
 Notes pour VL
 --
 Bien préciser :

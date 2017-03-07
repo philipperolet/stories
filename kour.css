@@ -68,3 +68,9 @@ body {
 .item-descr {
     font-size: 0.9em;
 }
+.legende .panel-body > div {
+    margin-bottom: 2em;
+}
+.legende .panel-body > div p {
+    margin-bottom: 1em;
+}
