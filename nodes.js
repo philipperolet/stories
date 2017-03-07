@@ -192,7 +192,7 @@ function update(source) {
     midPath.append('image')
 	.attr('class', 'node branch')
 	.attr("xlink:href", function(d) { return branchDetails[d.data.type].image; })
-	.attr("width", ICON_SIZE/2.0).attr("height",ICON_SIZE/2.0)
+	.attr("width", ICON_SIZE * 0.8).attr("height",ICON_SIZE * 0.8)
 
     // Add labels for the nodes
     nodeEnter.append('text')

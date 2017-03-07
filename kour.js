@@ -1,6 +1,5 @@
-// This variable's null value is used as a flag indicating that "OptimizeByIA" has
-// not been clicked
-var resultsWithoutIA = null; 
+var resultsWaveOne = null;
+var resultsWithIA = null;
 
 function launchCampaign(manualLaunch) {
     // Change new nodes into "end" nodes and add conversion boxes for end nodes
@@ -30,32 +29,39 @@ function launchCampaign(manualLaunch) {
 	.on('contextmenu', null);
 
     // Display results
-    var results = getCampaignResults();
-
-    d3.select('.results').attr("style", "display: block;");
-    ['media-cost', 'cac', 'conversions', 'roi'].forEach(function(kpi) {
-	animateToNumber(d3.select('.results .'+kpi), function(d) { return results[kpi]; });
-    });
-    
-    if (!manualLaunch && resultsWithoutIA) {
-	var iaPerf = getIAPerf(results);
+    if (manualLaunch) {
+	resultsWaveOne = getCampaignResults();
+	resultsWithIA = null;
+    }
+    else {
+	resultsWithIA = getCampaignResults();
+	var iaPerf = getIAPerf();
 	d3.select('.results-ia').attr("style", "display: block;");
 	['learning-time', 'conversion-gain', 'roi-gain'].forEach(function(kpi) {
 	    animateToNumber(d3.select('.results-ia .'+kpi), function(d) { return iaPerf[kpi]; });
 	});
-    }
+	['media-cost', 'cac', 'conversions', 'roi'].forEach(function(kpi) {
+	    animateToNumber(d3.select('.results-ia .'+kpi), function(d) { return resultsWithIA[kpi]; });
+	});
+    }	
+
+    d3.select('.results').attr("style", "display: block;");
+    ['media-cost', 'cac', 'conversions', 'roi'].forEach(function(kpi) {
+	animateToNumber(d3.select('.results .'+kpi), function(d) { return resultsWaveOne[kpi]; });
+    });
     
-    d3.select('button.launch').attr("disabled",true);
-    d3.select('button.optim').attr("disabled",true);
-    return results;
+    d3.select('button.launch').attr("disabled", true);
+    if (manualLaunch) d3.select('button.optim').attr("disabled", null);
 }
 
-function getIAPerf(resultsWithIA) {
-    var learningTime = Math.floor(5 * (Math.log(1 + (resultsWithIA["roi"] - resultsWithoutIA["roi"])/1000000)));
+
+
+function getIAPerf() {
+    var learningTime = Math.floor(5 * (Math.log(1 + (resultsWithIA["roi"] - resultsWaveOne["roi"])/1000000)));
     return {
 	"learning-time": learningTime,
-	"conversion-gain": resultsWithIA["conversions"] - resultsWithoutIA["conversions"],
-	"roi-gain": resultsWithIA["roi"] - resultsWithoutIA["roi"]
+	"conversion-gain": resultsWithIA["conversions"] - resultsWaveOne["conversions"],
+	"roi-gain": resultsWithIA["roi"] - resultsWaveOne["roi"]
     };
 }
 
@@ -99,7 +105,7 @@ function retry() {
     
     update(root);
     d3.select('button.launch').attr("disabled", null);
-    d3.select('button.optim').attr("disabled", null);
+    d3.select('button.optim').attr("disabled", true);
 }
 
 // optimum[depth][currentnodeline][branchtype] = the optimal msg, chan & datas for the child of currentnode
@@ -109,10 +115,8 @@ var optimum = [{}, {}, {}, {}, {}];
 
 function optimizeByIA() {
     if (!confirm("Lancer l'IA va modifier votre parcours actuel, êtes vous sûr?")) return false;
-    
-    // Save campaign results without IA
-    resultsWithoutIA = launchCampaign();
     retry();
+    d3.select('button.launch').attr("disabled", true);
     // iterate on depth, node type, parent channel, parent message
     for(var depth=3; depth >=0 ; depth--) {
 	branches.forEach(function(childType) { branches.forEach(function(nodeType) {
@@ -210,7 +214,6 @@ function optimizeByIA() {
 	});
     }
 
-
     function animateSubtree(node, iterations) {
 	return new Promise(function(resolve, reject) {
 	    if (iterations == 0) resolve();
@@ -221,7 +224,7 @@ function optimizeByIA() {
 		    nd.data.name = nd.data.message;
 		});
 		update(node);
-		sleep(50).then(function() { animateSubtree(node, iterations - 1).then(() => resolve()) })
+		sleep(300).then(function() { animateSubtree(node, iterations - 1).then(() => resolve()) })
 	    }
 	});
     }

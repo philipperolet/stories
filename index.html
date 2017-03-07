@@ -32,7 +32,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Test & learn VS Intelligence Artificielle</a></li>
+            <li class="active"><a href="#">Créez et testez vos parcours avec différents canaux et messages. Comparez-vous à un algorithme de Machine Learning</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -41,7 +41,7 @@
 
     <div class="container">
 	<div class="panel panel-default">
-	<div class="panel-heading">Créez et testez vos parcours avec différents canaux et messages. Comparez-vous à un algorithme de Machine Learning</div>
+	<div class="panel-heading">Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. Règles: texte d'Elisabeth. </div>
       <div class="row">
 
 	<div class="col-md-9">
@@ -50,20 +50,24 @@
 	  <div class="col-md-3 right-pane">
 
 	      <button type="button" class="btn btn-primary launch" onclick="launchCampaign(true);">
-		<span class="glyphicon glyphicon-star" aria-hidden="true"/> Lancer la campagne
+		<span class="glyphicon glyphicon-star" aria-hidden="true"/> Lancer la campagne (vague 1)
 	      </button>
-	      <button type="button" class="btn btn-info optim" onclick="optimizeByIA();">
-		<span class="glyphicon glyphicon-signal" aria-hidden="true"/> Optimiser avec I.A.
+	      <button type="button" class="btn btn-info optim" onclick="optimizeByIA();" disabled="true">
+		<span class="glyphicon glyphicon-signal" aria-hidden="true"/> Optimiser avec I.A. (vague 2)
 	      </button>
 	      <div class="results">
-		<div class="graph">
-		</div>
-		<h3>R&eacute;sultats</h3>
+		<!--div class="graph">
+		</div-->
+		<h3>R&eacute;sultats Vague 1</h3>
 		<p>Conversions : <span class="conversions"></span> pers.</p>
 		<p>Co&ucirc;ts Campagne : <span class="media-cost"></span>&euro; (CAC : <span class="cac"></span>&euro;)</p>
 		<p>ROI : <span class="roi"></span>&euro;</p>
 		<div class="results-ia">
-		  <h4>Performance IA</h4>
+		  <h3> R&eacute;sultats Vague 2 (IA)</h3>
+		  <p>Conversions : <span class="conversions"></span> pers.</p>
+		  <p>Co&ucirc;ts Campagne : <span class="media-cost"></span>&euro; (CAC : <span class="cac"></span>&euro;)</p>
+		  <p>ROI : <span class="roi"></span>&euro;</p>		  
+		  <h4>Gains de l'IA</h4>
 		  <p>Temps d'apprentissage IA : <span class="learning-time"></span> jours</p>
 		  <p>Gains en conversion : <span class="conversion-gain"></span> pers.</p>
 		  <p>Gains en ROI : <span class="roi-gain"></span>&euro;</p>
@@ -123,6 +127,6 @@
   <script src="data.js"></script>
   <script src="nodes.js"></script>
   <script src="kour.js"></script>
-  <script src="result-graph.js"></script>
+  <!--script src="result-graph.js"></script-->
   </body>
 </html>
