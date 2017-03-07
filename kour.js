@@ -10,7 +10,7 @@ function launchCampaign(manualLaunch) {
 	    node.data.channel = "stop";
 	    node.data.name = "";
 	} else if (node.children == null && node.data.type != "conversion") {
-	    node.addNode({"name": "Conversion!", "channel": "conversion", "type":"conversion"});
+	    node.addNode({"name": "Conversion!", "channel": "buyer", "type":"conversion"});
 	}
     });
     update(root);
@@ -131,7 +131,7 @@ function optimizeByIA() {
 			if (childType == "conversion") {
 			    optimum[depth][line][childType] = {
 				"message": "Conversion!",
-				"channel": "conversion",
+				"channel": "buyer",
 				"conversionRate": childReach,
 				"mediaCostRate": 0
 			    }

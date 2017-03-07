@@ -1,34 +1,38 @@
 // Data and labels
 var ICON_SIZE = 20;
+var INITIAL_REACH = 10000000;
+var MARGE_UNITAIRE = 200;
+
 var NOUV_ETAPE = "Créer Etape";
+
 var channelDetails = {
     "sms": {
 	"name": "SMS",
 	"description": "Envoi de SMS au prospect",
 	"cost": 0,
-	"engagement": 0.001,
-	"conversion": 0.0005,
+	"engagement": 0.03,
+	"conversion": 0.0015,
 	"favoured_message": "achat"},
     "video": {
 	"name": "Vidéo",
 	"description": "Preroll vidéo sur Youtube",
 	"cost": 0.01,
-	"engagement": 0.002,
+	"engagement": 0.005,
 	"conversion": 0.0005,
 	"favoured_message": "notoriete"},
     "display": {
 	"name": "Display",
 	"description": "Message display riche (e.g. natif, ou facebook)",
 	"cost": 0.0015,
-	"engagement": 0.0005,
-	"conversion": 0.0001,
+	"engagement": 0.002,
+	"conversion": 0.0002,
 	"favoured_message": "achat"},
     "email": {
 	"name": "E-mail",
 	"description": "Envoi d'email au prospect (rappel: reach mail à 100%)",	
 	"cost": 0,
-	"engagement": 0.0002,
-	"conversion": 0.00005,
+	"engagement": 0.01,
+	"conversion": 0.0005,
 	"favoured_message": "notoriete"}
 };
 var channels = Object.keys(channelDetails);
@@ -60,9 +64,18 @@ var branchDetails = {
 };
 var branches = Object.keys(branchDetails);
 var perfInformation = {
+    "convdef" : {
+	"name" : "Conversions",
+	"description" : "Somme totale sur toutes les étapes de la campagnes des personnes ayant renouvellé leur abonnement."},
+    "CAC" : {
+	"name" : "CAC",
+	"description" : "Customer Acquisition Cost, coût d'acquisition moyen par client = conversions / coût total campagne."},
     "roidef" : {
 	"name" : "ROI",
-	"description" : "Retour sur investissement de la campagne (en €), calculés comme les bénéfices nets générés par celle-ci: Marge nette par converti (en €) * conversions."},
+	"description" : "Retour sur investissement de la campagne (en €), calculés comme les bénéfices nets générés par celle-ci: Marge nette unitaire (en €) * conversions."},
+    "margedef" : {
+	"name" : "Marge nette unitaire",
+	"description" : "Bénéfice net moyen par converti (ici 250 euros) moins CAC"}
 }
     
 var details = {
@@ -85,8 +98,6 @@ Object.keys(details).forEach(function(type) {
     selEnter.merge(selection);
 });
 
-var INITIAL_REACH = 70000000;
-var MARGE_UNITAIRE = 150;
 /* ROOT NODE DATA
 Note: the type is meaningless for root node, but used 
 in computations */
@@ -131,6 +142,9 @@ function getRates(depth, message, channel,
     var FAVOURED_MESSAGE_UPLIFT = 0.3;
     var conv = channelDetails[channel]['conversion'];// * (0.9 + (Math.random()*0.2));
     var eng = channelDetails[channel]['engagement'];// * (0.9 + (Math.random()*0.2));
+
+    // Les canaux display & sms fonctionnent mieux avec l'achat
+    // Les canaux videos & mail avec la notoriété
     if (message == channelDetails[channel]['favoured_message']) {
 	conv *= (1 + FAVOURED_MESSAGE_UPLIFT * 1.25);
 	eng *= (1 + FAVOURED_MESSAGE_UPLIFT);
@@ -139,60 +153,87 @@ function getRates(depth, message, channel,
 	conv *= (1 - FAVOURED_MESSAGE_UPLIFT * 1.25);
 	eng *= (1 - FAVOURED_MESSAGE_UPLIFT);
     }
+
+    // Un message de notoriété booste l'engagement; un message d'achat booste la conversion
+    if (message == "notoriete") eng *= 4;
+    if (message == "achat") conv *= 2;
     if (depth >0) {
-    if (message == prev_message) {
-	conv /= 2;
-	eng /=2;
-    }
-    if (channel == prev_channel) {
-	conv /= 2;
-	eng /= 2;
-    }
-    if (depth == 2) {
-	conv *= 0.8;
-	eng *= 0.8;
-    }
-    if (depth == 3) {
-	conv *= 0.5;
-	eng *= 0.5;
-    }
-    if (reaction == "engagement") {
-	conv *= 10;
-    }
-    if (message == "achat" && prev_message == "notoriete") {
-	conv *= 4;
-	eng *=4;
-    }
-    if (prev_channel == "video" && channel != "video") {
-	conv *=4;
-	eng *=4;
-    }
-    if (prev_channel == "sms" && channel == "email") {
-	conv /= 4;
-	eng /= 4;
-    }
-    var real_nb_mail = ( prev_channel == "email" ? 1 : 0 ) + nb_mail;
-    var real_nb_sms = ( prev_channel == "sms" ? 1 : 0 ) + nb_sms;
-    if (channel == "email") {
-	if (real_nb_mail == 1) {
-	    conv /= 2;
-	    eng /= 2;
+
+	// Lassitude si 2 * le même message / le même canal
+	if (message == prev_message) {
+	    conv /= 3;
+	    eng /= 3;
 	}
-	if (real_nb_mail > 1) {
-	    conv /= 6;
-	    eng /= 6;
+	if (channel == prev_channel) {
+	    conv /= 3;
+	    eng /= 3;
 	}
-    }
-    if (channel == "sms") {
-	if (real_nb_sms == 1) {
-	    conv /= 4;
-	    eng /= 4;
+
+	// Lassitude progressive au fil des étapes
+	if (depth == 2) {
+	    conv *= 0.8;
+	    eng *= 0.8;
 	}
-	if (real_nb_sms > 1) {
-	    conv /= 10;
-	    eng /= 10;
+	if (depth == 3) {
+	    conv *= 0.5;
+	    eng *= 0.5;
 	}
-    }
+
+	// Taux de conversion amélioré suite à un engagement
+	if (reaction == "engagement") {
+	    conv *= 20;
+	}
+
+	var real_nb_mail = ( prev_channel == "email" ? 1 : 0 ) + nb_mail;
+	var real_nb_sms = ( prev_channel == "sms" ? 1 : 0 ) + nb_sms;
+
+	// Les gens sont moins réactifs aux emails / sms après un engagement
+	// mais plus après un engagement
+	
+	if (reaction == "engagement") {
+	    if (channel == "email" || channel == "sms") {
+		conv *= 2;
+		eng *= 2;
+	    }
+	}
+	else if (reaction == "negative") {
+	    if (channel == "email" || channel == "sms") {
+		conv /= 5;
+		eng /= 5;
+	    }
+	    // Le display obtient un boost dans les cas très négatif
+	    // Suprise incongrue là où le reste a échoué
+	    
+	    else if (channel == "display" && (real_nb_mail + real_nb_sms > 1)) {
+		conv *= 8;
+		eng *= 8;
+	    }
+	}	
+	// Le 2e email est 3 * moins performant, le 3e 6 * moins
+	if (channel == "email") {
+	    if (real_nb_mail == 1) {
+		conv /= 3;
+		eng /= 3;
+	    }
+	    if (real_nb_mail > 1) {
+		conv /= 8;
+		eng /= 8;
+	    }
+	}
+
+	// Idem pour le SMS avec 4 et 10
+	if (channel == "sms") {
+	    if (real_nb_sms == 1) {
+		conv /= 6;
+		eng /= 4;
+	    }
+	    if (real_nb_sms > 1) {
+		conv /= 10;
+		eng /= 10;
+	    }
+	}
+
+	//
     }
     return {
 	"conversion": conv,

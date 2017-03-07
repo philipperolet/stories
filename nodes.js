@@ -1,9 +1,8 @@
-
 var currentNode = null;
 
 // Set the dimensions and margins of the diagram
 var margin = {top: 0, right: 90, bottom: -20, left: 30},
-    width = 960 - margin.left - margin.right,
+    width = 850 - margin.left - margin.right,
     height = 920 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
@@ -23,8 +22,6 @@ var i = 0,
 
 // declares a tree layout and assigns the size
 var treemap = d3.tree().size([height, width]);
-
-    
 
 // Assigns parent, children, height, depth
 root = d3.hierarchy(treeData, function(d) { return d.children; });
@@ -139,7 +136,7 @@ function update(source) {
 	links = treeData.descendants().slice(1);
 
     // Normalize for fixed-depth.
-    nodes.forEach(function(d){ d.y = d.depth * 180});
+    nodes.forEach(function(d){ d.y = d.depth * 168});
 
     // ****************** Nodes section ***************************
 
@@ -191,7 +188,7 @@ function update(source) {
     // Add image labels for the branches
     midPath.append('image')
 	.attr('class', 'node branch')
-	.attr("xlink:href", function(d) { return branchDetails[d.data.type] + ".png"; })
+	.attr("xlink:href", function(d) { return d.data.type + ".png"; })
 	.attr("width", ICON_SIZE * 0.8).attr("height",ICON_SIZE * 0.8)
 
     // Add labels for the nodes
