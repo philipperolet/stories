@@ -54,3 +54,17 @@ body {
 .results-ia {
     display: none;
 }
+
+/* LEGENDE */
+.legende {
+    margin-top: 2em;
+}
+.item-img {
+    margin-right: 1em;
+}
+.item-name {
+    font-weight: bold;
+}
+.item-descr {
+    font-size: 0.9em;
+}

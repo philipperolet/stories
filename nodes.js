@@ -1,4 +1,4 @@
-var ICON_SIZE = 20;
+
 var currentNode = null;
 
 // Set the dimensions and margins of the diagram
@@ -60,7 +60,7 @@ root.__proto__._updateStepData = function(stepData) {
 	if (this.depth == 2 && svgHeight < 700) updateSvgSize(2 * svgHeight);
 	this.addNode({"name": NOUV_ETAPE, "channel": "new", "type": "negative"});	
         this.addNode({"name": NOUV_ETAPE, "channel": "new", "type":"engagement"});
-	this.addNode({"name": "Conversion!", "channel": "conversion", "type":"conversion"});
+	this.addNode({"name": "Conversion!", "channel": "buyer", "type":"conversion"});
     }
     this._updateNodeReach();
 }
@@ -191,7 +191,7 @@ function update(source) {
     // Add image labels for the branches
     midPath.append('image')
 	.attr('class', 'node branch')
-	.attr("xlink:href", function(d) { return branchDetails[d.data.type].image; })
+	.attr("xlink:href", function(d) { return branchDetails[d.data.type] + ".png"; })
 	.attr("width", ICON_SIZE * 0.8).attr("height",ICON_SIZE * 0.8)
 
     // Add labels for the nodes

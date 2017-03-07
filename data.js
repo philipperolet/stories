@@ -1,24 +1,89 @@
 // Data and labels
-
+var ICON_SIZE = 20;
 var NOUV_ETAPE = "Créer Etape";
 var channelDetails = {
-    "sms": { "cost": 0, "engagement": 0.001, "conversion": 0.0005, "favoured_message": "achat"},
-    "video": { "cost": 0.01, "engagement": 0.002, "conversion": 0.0005, "favoured_message": "notoriete"},
-    "display": { "cost": 0.0015, "engagement": 0.0005, "conversion": 0.0001, "favoured_message": "achat"},
-    "email": { "cost": 0, "engagement": 0.0002, "conversion": 0.00005, "favoured_message": "notoriete"}
-}
+    "sms": {
+	"name": "SMS",
+	"description": "Envoi de SMS au prospect",
+	"cost": 0,
+	"engagement": 0.001,
+	"conversion": 0.0005,
+	"favoured_message": "achat"},
+    "video": {
+	"name": "Vidéo",
+	"description": "Preroll vidéo sur Youtube",
+	"cost": 0.01,
+	"engagement": 0.002,
+	"conversion": 0.0005,
+	"favoured_message": "notoriete"},
+    "display": {
+	"name": "Display",
+	"description": "Message display riche (e.g. natif, ou facebook)",
+	"cost": 0.0015,
+	"engagement": 0.0005,
+	"conversion": 0.0001,
+	"favoured_message": "achat"},
+    "email": {
+	"name": "E-mail",
+	"description": "Envoi d'email au prospect (rappel: reach mail à 100%)",	
+	"cost": 0,
+	"engagement": 0.0002,
+	"conversion": 0.00005,
+	"favoured_message": "notoriete"}
+};
 var channels = Object.keys(channelDetails);
 
-var messageDetails = {"notoriete": {"name": "Notoriété"},
-		       "achat": {"name": "Achat"}};
+var messageDetails = {
+    "notoriete": {
+	"name": "Notoriété",
+    	"description": "Message focalisé sur l'image de la marque"},
+    "achat": {
+	"name": "Achat",
+    	"description": "Message focalisé sur la transformation (e.g. promo, call-to-action fort)"}
+};
+
 var messages = Object.keys(messageDetails);
 
 var branchDetails = {
-    "conversion": {"image":"euro.png", "textColor":"green"},
-    "engagement": {"image":"like.png", "textColor":"blue"},
-    "negative": {"image":"minus.png", "textColor":"red"}
-}
+    "conversion": {
+	"name": "Conversion",
+    	"description": "Indique que le prospect a converti. Il ne sera plus ciblé par la suite.",
+	"textColor":"green"},
+    "engagement": {
+	"textColor":"blue",
+	"name": "Engagement",
+    	"description": "Indique que le prospect a réagi positivement au message (e.g. clic, visualisation à 100%, visite du site) mais sans convertir."},
+    "negative": {
+	"textColor":"red",
+	"name": "Négatif",
+    	"description": "Le prospect a vu le message mais n'a pas donné signe d'engagement."}
+};
 var branches = Object.keys(branchDetails);
+var perfInformation = {
+    "roidef" : {
+	"name" : "ROI",
+	"description" : "Retour sur investissement de la campagne (en €), calculés comme les bénéfices nets générés par celle-ci: Marge nette par converti (en €) * conversions."},
+}
+    
+var details = {
+    "channel" : channelDetails,
+    "branch" : branchDetails,
+    "message" : messageDetails,
+    "perf" : perfInformation
+}
+Object.keys(details).forEach(function(type) { Object.keys(details[type]).forEach(function(key) { details[type][key].id = key;});});
+Object.keys(details).forEach(function(type) {
+    var selection = d3.selectAll("."+type+"-info").selectAll("div.item")
+	.data(Object.values(details[type]));
+    var selEnter = selection.enter().append('div').attr("class", "item");
+    selEnter.filter(function(d) { return type != "perf";}).append("img").attr("src", function(d) { return d.id + ".png";})
+	.attr("class", "item-img")
+	.attr("width", ICON_SIZE)
+    	.attr("height", ICON_SIZE);
+    selEnter.append("span").attr("class", "item-name").text(function(d) { return d.name; });
+    selEnter.append("p").attr("class", "item-descr").text(function(d) { return d.description; });
+    selEnter.merge(selection);
+});
 
 var INITIAL_REACH = 70000000;
 var MARGE_UNITAIRE = 150;
