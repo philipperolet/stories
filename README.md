@@ -1,4 +1,8 @@
 # Kour
+Règles
+==
+### 
+
 Notes pour VL
 --
 Bien préciser :
@@ -22,22 +26,29 @@ OK Résultats CAC / Reach / Dépense média sur un run
 (0.2) Fixer le bug du "collapse"
 (2) IA : Calcul du résultat optimisé sur conversions / cac
 (1) IA : multiples essais randoms sur le parcours défini avant résultat
-
-Doable
---
-### Sûr
-
 (0.5) Afficher un "coût de convergence" = coût de l'IA pour converger = distance d'arbre * conversions
-(0.5) Légende : "parcours sur le personna image + caractéristiquee" + pictos des créas humour & co.
-Bouton droit : relancer; expliquer les eurs / like / neg / unreached
-
-(0.5) Pour le négatif, splitter entre "no reaction" et "matching issue"
-
-(0.5) le graphe se reconstruit quand le parcours grandit
-
 (0.1) alerte if refresh / close
 
 (0.1) mettre à dispo le truc online
+(0.5) Règles
+(0.5) Bug IA : parcours stoppé
+Doable
+--
+
+### Now
+(0.1) Lancer camp -- pas de rappel sur perf I.A.
+(0.1) Changer la mesure de jours / de perf (ROI)
+### Sûr
+(0.5) 
+(0.5) faire varier les canaux / messages selon les branches
+
+(0.5) Légende : "parcours sur le personna image + caractéristiquee" + pictos des créas humour & co.
+Bouton droit : relancer; expliquer les eurs / like / neg / unreached
+
+
+### Iced
+(0.5) le graphe se reconstruit quand le parcours grandit
+
 
 (2) Résultats en graphes suivis avec le temps
 

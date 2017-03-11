@@ -1,10 +1,9 @@
-var ICON_SIZE = 20;
 var currentNode = null;
 
 // Set the dimensions and margins of the diagram
-var margin = {top: -20, right: 90, bottom: -20, left: 30},
-    width = 960 - margin.left - margin.right,
-    height = 700 - margin.top - margin.bottom;
+var margin = {top: 0, right: 90, bottom: -20, left: 30},
+    width = 850 - margin.left - margin.right,
+    height = 920 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 // appends a 'group' element to 'svg'
@@ -12,6 +11,7 @@ var margin = {top: -20, right: 90, bottom: -20, left: 30},
 var svg = d3.select("div#kour").append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
+    .attr("class", "parcours")
     .append("g")
     .attr("transform", "translate("
           + margin.left + "," + margin.top + ")");
@@ -28,11 +28,20 @@ root = d3.hierarchy(treeData, function(d) { return d.children; });
 root.x0 = height / 2;
 root.y0 = 0;
 
+function updateSvgSize(height) {
+    //svg = d3.select("div#kour svg")
+	//.attr("height", height + margin.top + margin.bottom);
+    root.x0 = height / 2;
+    //treemap = d3.tree().size([height, width]);
+    update(root);
+}
+
+
 // Adds a few functions to nodes object
 root.__proto__.updateStep = function() {
     this._updateStepData({
 	"channel": d3.select("#canal").property('value'),
-	"name": d3.select("#message").property('value'),
+	"name": messageDetails[d3.select("#message").property('value')].name,
 	"message": d3.select("#message").property('value')
     });
     update(this); 
@@ -44,9 +53,11 @@ root.__proto__._updateStepData = function(stepData) {
     this.data.message = stepData.message;
     this._children = null;
     if (!(this.children) && this.depth < 3 && this.data.type != "conversion") {
+	svgHeight = d3.select("div#kour svg").attr("height");
+	if (this.depth == 2 && svgHeight < 700) updateSvgSize(2 * svgHeight);
 	this.addNode({"name": NOUV_ETAPE, "channel": "new", "type": "negative"});	
         this.addNode({"name": NOUV_ETAPE, "channel": "new", "type":"engagement"});
-	this.addNode({"name": "Conversion!", "channel": "conversion", "type":"conversion"});
+	this.addNode({"name": "Conversion!", "channel": "buyer", "type":"conversion"});
     }
     this._updateNodeReach();
 }
@@ -67,11 +78,28 @@ root.__proto__.getNodeReach = function() {
 	this.parent.data.channel +
 	this.parent.data.type +
 	(this.parent.parent ? this.parent.parent.data.message : "none") +
-	(this.parent.parent ? this.parent.parent.data.channel : "none");
+	(this.parent.parent ? this.parent.parent.data.channel : "none") +
+	this.parent.getPreviousEmailsAndSmsNumber();
 
-    return Math.ceil(this.parent.data.reach * rates[this.parent.depth][line][this.data.type]);
+    return Math.round(this.parent.data.reach * rates[this.parent.depth][line][this.data.type]);
 }
-    
+
+
+root.__proto__.getPreviousEmailsAndSmsNumber = function () {
+    var email_nb = 0, sms_nb = 0;
+    if (!this.parent) return "00";
+    var grandparent = this.parent.parent;
+    if (grandparent) {
+	if (grandparent.data.channel == "email") email_nb++;
+	if (grandparent.data.channel == "sms") sms_nb++;
+	if (grandparent.parent) {
+	    if (grandparent.parent.data.channel == "email") email_nb++;
+	    if (grandparent.parent.data.channel == "sms") sms_nb++;
+	}
+    }
+    return ""+ email_nb + sms_nb;
+}
+
 root.__proto__.addNode = function(data) {
     child = d3.hierarchy(data);
     child.parent = this;
@@ -84,7 +112,7 @@ root.__proto__.addNode = function(data) {
     this.children.push(child);
 }
 
-// Collapse the node and all it's children
+// Collapse the node and all its children
 root.__proto__.collapse = function () {
     if(this.children) {
 	this._children = this.children;
@@ -108,7 +136,7 @@ function update(source) {
 	links = treeData.descendants().slice(1);
 
     // Normalize for fixed-depth.
-    nodes.forEach(function(d){ d.y = d.depth * 180});
+    nodes.forEach(function(d){ d.y = d.depth * 168});
 
     // ****************** Nodes section ***************************
 
@@ -160,8 +188,8 @@ function update(source) {
     // Add image labels for the branches
     midPath.append('image')
 	.attr('class', 'node branch')
-	.attr("xlink:href", function(d) { return branchDetails[d.data.type].image; })
-	.attr("width", ICON_SIZE/2.0).attr("height",ICON_SIZE/2.0)
+	.attr("xlink:href", function(d) { return d.data.type + ".png"; })
+	.attr("width", ICON_SIZE * 0.8).attr("height",ICON_SIZE * 0.8)
 
     // Add labels for the nodes
     nodeEnter.append('text')
@@ -278,7 +306,6 @@ function formatNumber(num) {
     // Formats a number with K for 1000s, M for millions, with a precision of 2
     switch (Math.floor(Math.log10(num))) {
     case 0:
-	return num.toPrecision(1);
     case 1:
 	return num.toPrecision(2);
     case 2:
