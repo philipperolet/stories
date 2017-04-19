@@ -71,8 +71,8 @@ var perfInformation = {
 	"name" : "CAC",
 	"description" : "Customer Acquisition Cost, coût d'acquisition moyen par client = conversions / coût total campagne."},
     "roidef" : {
-	"name" : "ROI",
-	"description" : "Retour sur investissement de la campagne (en €), calculés comme les bénéfices nets générés par celle-ci: Marge nette unitaire (en €) * conversions."},
+	"name" : "Bénéfices nets",
+	"description" : "Bénéfices nets dégagés par la campagne (en €), calculés comme la marge unitaire nette (€ par conversion) multipliée par le nombre de conversions."},
     "margedef" : {
 	"name" : "Marge nette unitaire",
 	"description" : "Bénéfice net moyen par converti (ici 250 euros) moins CAC"}

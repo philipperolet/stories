@@ -1,9 +1,11 @@
 var resultsWaveOne = null;
 var resultsWithIA = null;
 
+
 function launchCampaign(manualLaunch) {
     // Change new nodes into "end" nodes and add conversion boxes for end nodes
     var treeData = treemap(root);
+    
     var nodes = treeData.descendants();
     nodes.forEach(function(node) {
 	if (node.data.channel == "new") {

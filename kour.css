@@ -2,11 +2,21 @@ body {
     padding-top: 5rem;
 }
 
+/* Header */
+.navbar-header a.navbar-brand {
+    margin-top: -5px;
+}
+
+button.contact {
+    float: right;
+    margin-top: 0.5em;
+}
 .starter-template {
     padding: 3rem 1.5rem;
     text-align: center;
 }
 
+/* Nodes */
 .node text {
     font: 10px sans-serif;
 }
