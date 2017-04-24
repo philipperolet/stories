@@ -10,6 +10,7 @@ body {
 button.contact {
     float: right;
     margin-top: 0.5em;
+    background-color: #222;
 }
 .starter-template {
     padding: 3rem 1.5rem;
