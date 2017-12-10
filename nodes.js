@@ -291,7 +291,7 @@ function update(source) {
 	// if the node has been set
 	if (channels.indexOf(d.data.channel) >= 0 &&
 	    messages.indexOf(d.data.message) >=0 &&
-	    confirm("Réinitialiser cette étape? (supprime les étapes filles)")) {
+	    confirm("Reset this setp? (deletes child steps)")) {
 	    d.data.channel = "new";
 	    d.data.message = NOUV_ETAPE;
 	    d.data.name = NOUV_ETAPE;

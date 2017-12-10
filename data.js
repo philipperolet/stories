@@ -3,33 +3,37 @@ var ICON_SIZE = 20;
 var INITIAL_REACH = 10000000;
 var MARGE_UNITAIRE = 200;
 
-var NOUV_ETAPE = "Créer Etape";
+var NOUV_ETAPE = "Create Step";
 
 var channelDetails = {
     "sms": {
 	"name": "SMS",
-	"description": "Envoi de SMS au prospect",
+	"description": "SMS message to prospect",
+	"description_fr": "Envoi de SMS au prospect",
 	"cost": 0,
 	"engagement": 0.03,
 	"conversion": 0.0015,
 	"favoured_message": "achat"},
     "video": {
 	"name": "Vidéo",
-	"description": "Preroll vidéo sur Youtube",
+	"description": "Video preroll on Youtube",
+	"description_fr": "Preroll vidéo sur Youtube",
 	"cost": 0.01,
 	"engagement": 0.005,
 	"conversion": 0.0005,
 	"favoured_message": "notoriete"},
     "display": {
 	"name": "Display",
-	"description": "Message display riche (e.g. natif, ou facebook)",
+	"description": "Rich display message (e.g. native, or facebook)",
+	"description_fr": "Message display riche (e.g. natif, ou facebook)",
 	"cost": 0.0015,
 	"engagement": 0.002,
 	"conversion": 0.0002,
 	"favoured_message": "achat"},
     "email": {
 	"name": "E-mail",
-	"description": "Envoi d'email au prospect (rappel: reach mail à 100%)",	
+	"description": "E-mail sent to prospect (reminder: 100% reach assumed for email)",
+	"description_fr": "Envoi d'email au prospect (rappel: reach mail à 100%)",	
 	"cost": 0,
 	"engagement": 0.01,
 	"conversion": 0.0005,
@@ -39,11 +43,15 @@ var channels = Object.keys(channelDetails);
 
 var messageDetails = {
     "notoriete": {
-	"name": "Notoriété",
-    	"description": "Message focalisé sur l'image de la marque"},
+	"name": "Brand image",
+    	"description": "Message focused on brand identity",
+	"name_fr": "Notoriété",
+    	"description_fr": "Message focalisé sur l'image de la marque"},
     "achat": {
-	"name": "Achat",
-    	"description": "Message focalisé sur la transformation (e.g. promo, call-to-action fort)"}
+	"name": "Promotion",
+    	"description": "Message focused on promoting a product to convert (e.g. promo, strong call-to-action)",
+	"name_fr": "Achat",
+    	"description_fr": "Message focalisé sur la transformation (e.g. promo, call-to-action fort)"}
 };
 
 var messages = Object.keys(messageDetails);
@@ -51,31 +59,42 @@ var messages = Object.keys(messageDetails);
 var branchDetails = {
     "conversion": {
 	"name": "Conversion",
-    	"description": "Indique que le prospect a converti. Il ne sera plus ciblé par la suite.",
+    	"description": "Indicates the prospect bought. S/he won't be targeted again.",
+	"description_fr": "Indique que le prospect a converti. Il ne sera plus ciblé par la suite.",
 	"textColor":"green"},
     "engagement": {
 	"textColor":"blue",
 	"name": "Engagement",
-    	"description": "Indique que le prospect a réagi positivement au message (e.g. clic, visualisation à 100%, visite du site) mais sans convertir."},
+	"description": "The prospect reacted positively to the message (e.g. clic, site visit, preroll fully viewed) but did not convert.",
+    	"description_fr": "Indique que le prospect a réagi positivement au message (e.g. clic, visualisation à 100%, visite du site) mais sans convertir."},
     "negative": {
 	"textColor":"red",
-	"name": "Négatif",
-    	"description": "Le prospect a vu le message mais n'a pas donné signe d'engagement."}
+	"name": "Negative",
+    	"description": "Prospect saw the message but did not react.",
+	"name_fr": "Négatif",
+    	"description_fr": "Le prospect a vu le message mais n'a pas donné signe d'engagement."}
+
 };
 var branches = Object.keys(branchDetails);
 var perfInformation = {
     "convdef" : {
 	"name" : "Conversions",
-	"description" : "Somme totale sur toutes les étapes de la campagnes des personnes ayant renouvellé leur abonnement."},
+	"description" : "Total sum on all the steps of the campgain of people who converted.",
+	"description_fr" : "Somme totale sur toutes les étapes de la campagnes des personnes ayant renouvellé leur abonnement."},
     "CAC" : {
 	"name" : "CAC",
-	"description" : "Customer Acquisition Cost, coût d'acquisition moyen par client = conversions / coût total campagne."},
+	"description" : "Customer Acquisition Cost = conversions / total campaign cost.",
+	"description_fr" : "Customer Acquisition Cost, coût d'acquisition moyen par client = conversions / coût total campagne."},
     "roidef" : {
-	"name" : "Bénéfices nets",
-	"description" : "Bénéfices nets dégagés par la campagne (en €), calculés comme la marge unitaire nette (€ par conversion) multipliée par le nombre de conversions."},
+	"name" : "Net profits", 
+	"description" : "Net profits of campaign (in €), computed as net unitary margin (€ per conversion) multiplied by number of conversions.",
+	"name_fr" : "Bénéfices nets",
+	"description_fr" : "Bénéfices nets dégagés par la campagne (en €), calculés comme la marge unitaire nette (€ par conversion) multipliée par le nombre de conversions."},
     "margedef" : {
-	"name" : "Marge nette unitaire",
-	"description" : "Bénéfice net moyen par converti (ici 250 euros) moins CAC"}
+	"name" : "Net unitary margin",
+	"description" : "Average net profit by conversion (here 250 euros) minus CAC",
+	"name_fr" : "Marge nette unitaire",
+	"description_fr" : "Bénéfice net moyen par converti (ici 250 euros) moins CAC"}
 }
     
 var details = {

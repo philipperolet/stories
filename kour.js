@@ -116,7 +116,7 @@ var optimum = [{}, {}, {}, {}, {}];
 
 
 function optimizeByIA() {
-    if (!confirm("Lancer l'IA va modifier votre parcours actuel, êtes vous sûr?")) return false;
+    if (!confirm("Running the A.I. will change the current customer journey; are you sure ?")) return false;
     retry();
     d3.select('button.launch').attr("disabled", true);
     // iterate on depth, node type, parent channel, parent message

@@ -35,7 +35,8 @@
               <li class="active"><a href="#">Stories - Customer Journey</a></li>
           </ul>
 	  <button type="button" class="btn btn-success contact" onclick="window.open(&quot;mailto:contact@artefact.is?subject=Stories - j'aimerais en savoir plus&quot;,&quot;_self&quot;);">
-	      <span class="glyphicon glyphicon-play" aria-hidden="true"/> Aller plus loin
+	      <span class="glyphicon glyphicon-play" aria-hidden="true" lang="fr"/> Aller plus loin</span>
+	      <span class="glyphicon glyphicon-play" aria-hidden="true" lang="en"/> Go further</span>
 	  </button>
         </div><!--/.nav-collapse -->
       </div>
@@ -43,7 +44,8 @@
 
     <div class="container">
 	<div class="panel panel-default">
-	    <div class="panel-heading">Campagne multi-étape, multi-canal, multi-message : trouvez le parcours le plus performant puis comparez-vous à une intelligence artificielle</div>
+	    <div class="panel-heading"><span lang="fr">Campagne multi-étape, multi-canal, multi-message : trouvez le parcours le plus performant puis comparez-vous à une intelligence artificielle</span>
+	    <span lang="en">Multistep, multichannel, multimessage campaing : find the best-performing customer journey, then compare your score to that of an A.I.</span></div>
 	    <div class="row">
 
 		<div class="col-lg-8">
@@ -51,31 +53,33 @@
 		</div>
 		<div class="col-lg-4 right-pane">
 		    <button type="button" class="btn btn-primary launch" onclick="launchCampaign(true);">
-		  <span class="glyphicon glyphicon-star" aria-hidden="true"/> Lancer la campagne (vague 1)
+			<span class="glyphicon glyphicon-star" aria-hidden="true" lang="fr"/> Lancer la campagne (vague 1)</span>
+			<span class="glyphicon glyphicon-star" aria-hidden="true" lang="en"/> Launch campaign (1st wave)<span>
 	      </button>
 	      <button type="button" class="btn btn-primary optim" onclick="optimizeByIA();" disabled="true">
-		<span class="glyphicon glyphicon-signal" aria-hidden="true"/> Optimiser avec I.A. (vague 2)
+		  <span class="glyphicon glyphicon-signal" aria-hidden="true" lang="fr"/> Optimiser avec I.A. (vague 2)</span>
+		  <span class="glyphicon glyphicon-signal" aria-hidden="true" lang="en"/> A.I. optimization (2nd wave)</span>		  		  
 	      </button>
 	      <div class="results">
 		<!--div class="graph">
 		</div-->
-		<h3>R&eacute;sultats Vague 1</h3>
+		<h3><span lang="fr">R&eacute;sultats Vague 1</span><span lang="en">1st wave results</span></h3>
 		<p>Conversions : <span class="conversions"></span> pers.</p>
-		<p>Co&ucirc;ts Campagne : <span class="media-cost"></span>&euro; (CAC : <span class="cac"></span>&euro;)</p>
-		<p>Bénéfices nets : <span class="roi"></span>&euro;</p>
+		<p><span lang="fr">Co&ucirc;ts Campagne :</span><span lang="en">Campaign costs: </span><span class="media-cost"></span>&euro; (CAC : <span class="cac"></span>&euro;)</p>
+		<p><span lang="fr">Bénéfices nets : </span><span lang="en">Net profits: <span><span class="roi"></span>&euro;</p>
 		<div class="results-ia">
-		  <h3> R&eacute;sultats Vague 2 (IA)</h3>
+		  <h3><span lang="fr">R&eacute;sultats Vague 2 (IA)</span><span lang="en">2nd wave results</span></h3>
 		  <p>Conversions : <span class="conversions"></span> pers.</p>
-		  <p>Co&ucirc;ts Campagne : <span class="media-cost"></span>&euro; (CAC : <span class="cac"></span>&euro;)</p>
-		  <p>Bénéfices nets : <span class="roi"></span>&euro;</p>		  
-		  <h4>Gains de l'IA</h4>
-		  <p>Temps d'apprentissage IA : <span class="learning-time"></span> jours</p>
-		  <p>Gains en conversion : <span class="conversion-gain"></span> pers.</p>
-		  <p>Gains en euros : <span class="roi-gain"></span>&euro;</p>
+		  <p><span lang="fr">Co&ucirc;ts Campagne :</span><span lang="en">Campaign costs: </span><span class="media-cost"></span>&euro; (CAC : <span class="cac"></span>&euro;)</p>
+		  <p><span lang="fr">Bénéfices nets : </span><span lang="en">Net profits: <span><span class="roi"></span>&euro;</p>
+		  <h4><span lang="fr">Gains de l'IA</h4>
+		  <p><span lang="fr">Temps d'apprentissage IA :</span><span lang="en">Learning time of AI: </span><span class="learning-time"></span> <span lang="fr">jours</span><span lang="en">days</span></p>
+		  <p><span lang="fr">Gains en conversion : </span><span lang="en">Conversion gains: </span><span class="conversion-gain"></span> pers.</p>
+		  <p><span lang="fr">Gains en euros : </span><span lang="en">Gains in euros: </span><span class="roi-gain"></span>&euro;</p>
 		  <!--p class="note">La performance de l'IA est calculée par rapport au dernier parcours que vous avez réalisé avant de cliquer sur "Optimiser par IA"</p-->
 		</div>
 		<button type="button" class="btn btn-primary retry" onclick="retry();">
-		  <span class="glyphicon glyphicon-repeat" aria-hidden="true"/> Réessayer
+		  <span class="glyphicon glyphicon-repeat" aria-hidden="true"/> Retry
 		</button>
 	      </div>
 
@@ -85,10 +89,10 @@
 		  <h3 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">Informations</a></h3>
 		</div>
 		<div class="panel-body collapse" id="collapseInfo">
-		  <div class="perf-info"><h4>KPIs de campagne</h4></div>
-		  <div class="channel-info"><h4>Canaux disponibles</h4></div>
-		  <div class="message-info"><h4>Messages disponibles</h4></div>
-		  <div class="branch-info"><h4>Types de réactions</h4></div>
+		  <div class="perf-info"><h4><span lang="fr">KPIs de campagne</span><span lang="en">Campaign KPIs</span></h4></div>
+		  <div class="channel-info"><h4><span lang="fr">Canaux disponibles</span><span lang="en">Available channels</span></h4></div>
+		  <div class="message-info"><h4><span lang="fr">Messages disponibles</span><span lang="en">Available messages</span></h4></div>
+		  <div class="branch-info"><h4><span lang="fr">Types de réactions</span><span lang="en">Possible outcomes</span></h4></div>
 		</div>
 	      </div>
 	      <!---->
@@ -104,12 +108,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Choisissez le canal et le message</h4>
+        <h4 class="modal-title" id="myModalLabel"><span lang="fr">Choisissez le canal et le message</span><span lang="en">Choose channel and message</span></h4>
       </div>
       <div class="modal-body row">
 	<div class="col-md-6">
 	  <div class="form-group">
-	    <label for="sel1">Canal:</label>
+	    <label for="sel1"><span lang="fr">Canal:</span><span lang="en">Channel:</span></label>
 	    <select class="form-control" id="canal">
 	      <option value="display">Display</option>
 	      <option value="video">Vidéo</option>
@@ -122,14 +126,14 @@
 	  <div class="form-group">
 	    <label for="sel1">Message:</label>
 	    <select class="form-control" id="message">
-	      <option value="notoriete">Notoriété</option>
-	      <option value="achat">Achat</option>
+	      <option value="notoriete">Brand image</option>
+	      <option value="achat">Promotion</option>
 	    </select>
 	  </div>
 	</div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="currentNode.updateStep(); return false;">Ok</button>
       </div>
     </div>
@@ -152,8 +156,9 @@
 
       ga('create', 'UA-97701888-1', 'auto');
       ga('send', 'pageview');
-
+     $(function() {
+	 $('[lang="fr"]').hide();
+	 });
     </script>
-  <!--script src="result-graph.js"></script-->
   </body>
 </html>
