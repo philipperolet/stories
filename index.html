@@ -7,9 +7,9 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+    <link rel="icon" href="trajectory.png">
 
-    <title>EBG : IA et Parcours Consommateur</title>
+    <title>Stories - Customer Journey - Artefact</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -23,34 +23,37 @@
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
+            <span class="sr-only">Navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Stories</a>
+	  <a class="navbar-brand" href="http://www.artefact.is"><img src="logo.gif" height="30px" alt="Artefact"/></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Customer Journey : campagnes multi-canales, multi-messages et multi-étapes</a></li>
+              <li class="active"><a href="#">Stories - Customer Journey</a></li>
           </ul>
+	  <button type="button" class="btn btn-success contact" onclick="window.open(&quot;mailto:contact@artefact.is?subject=Stories - j'aimerais en savoir plus&quot;,&quot;_self&quot;);">
+	      <span class="glyphicon glyphicon-play" aria-hidden="true"/> Aller plus loin
+	  </button>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
 
     <div class="container">
 	<div class="panel panel-default">
-	<div class="panel-heading">Trouvez le parcours le plus performant puis comparez-vous à une IA </div>
-      <div class="row">
+	    <div class="panel-heading">Campagne multi-étape, multi-canal, multi-message : trouvez le parcours le plus performant puis comparez-vous à une intelligence artificielle</div>
+	    <div class="row">
 
-	<div class="col-lg-8">
-	    <div id="kour" class="panel-body"></div>
-	  </div>
-	  <div class="col-lg-4 right-pane">
-	      <button type="button" class="btn btn-primary launch" onclick="launchCampaign(true);">
-		<span class="glyphicon glyphicon-star" aria-hidden="true"/> Lancer la campagne (vague 1)
+		<div class="col-lg-8">
+		    <div id="kour" class="panel-body"></div>
+		</div>
+		<div class="col-lg-4 right-pane">
+		    <button type="button" class="btn btn-primary launch" onclick="launchCampaign(true);">
+		  <span class="glyphicon glyphicon-star" aria-hidden="true"/> Lancer la campagne (vague 1)
 	      </button>
-	      <button type="button" class="btn btn-info optim" onclick="optimizeByIA();" disabled="true">
+	      <button type="button" class="btn btn-primary optim" onclick="optimizeByIA();" disabled="true">
 		<span class="glyphicon glyphicon-signal" aria-hidden="true"/> Optimiser avec I.A. (vague 2)
 	      </button>
 	      <div class="results">
@@ -59,16 +62,16 @@
 		<h3>R&eacute;sultats Vague 1</h3>
 		<p>Conversions : <span class="conversions"></span> pers.</p>
 		<p>Co&ucirc;ts Campagne : <span class="media-cost"></span>&euro; (CAC : <span class="cac"></span>&euro;)</p>
-		<p>ROI : <span class="roi"></span>&euro;</p>
+		<p>Bénéfices nets : <span class="roi"></span>&euro;</p>
 		<div class="results-ia">
 		  <h3> R&eacute;sultats Vague 2 (IA)</h3>
 		  <p>Conversions : <span class="conversions"></span> pers.</p>
 		  <p>Co&ucirc;ts Campagne : <span class="media-cost"></span>&euro; (CAC : <span class="cac"></span>&euro;)</p>
-		  <p>ROI : <span class="roi"></span>&euro;</p>		  
+		  <p>Bénéfices nets : <span class="roi"></span>&euro;</p>		  
 		  <h4>Gains de l'IA</h4>
 		  <p>Temps d'apprentissage IA : <span class="learning-time"></span> jours</p>
 		  <p>Gains en conversion : <span class="conversion-gain"></span> pers.</p>
-		  <p>Gains en ROI : <span class="roi-gain"></span>&euro;</p>
+		  <p>Gains en euros : <span class="roi-gain"></span>&euro;</p>
 		  <!--p class="note">La performance de l'IA est calculée par rapport au dernier parcours que vous avez réalisé avant de cliquer sur "Optimiser par IA"</p-->
 		</div>
 		<button type="button" class="btn btn-primary retry" onclick="retry();">
@@ -79,9 +82,9 @@
 	      <!-- Légende -->
 	      <div class="panel panel-primary legende">
 		<div class="panel-heading">
-		  <h3 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseInfo" aria-expanded="true" aria-controls="collapseInfo">Informations</a></h3>
+		  <h3 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">Informations</a></h3>
 		</div>
-		<div class="panel-body collapse in" id="collapseInfo">
+		<div class="panel-body collapse" id="collapseInfo">
 		  <div class="perf-info"><h4>KPIs de campagne</h4></div>
 		  <div class="channel-info"><h4>Canaux disponibles</h4></div>
 		  <div class="message-info"><h4>Messages disponibles</h4></div>
@@ -138,9 +141,19 @@
     <script src="lib/d3.v4.min.js"></script>
     <script src="lib/jquery.min.js"></script>
     <script src="lib/bootstrap.min.js"></script>
-  <script src="data.js"></script>
-  <script src="nodes.js"></script>
-  <script src="kour.js"></script>
+    <script src="data.js"></script>
+    <script src="nodes.js"></script>
+    <script src="kour.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-97701888-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
   <!--script src="result-graph.js"></script-->
   </body>
 </html>
