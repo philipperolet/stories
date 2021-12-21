@@ -188,7 +188,7 @@ function update(source) {
     // Add image labels for the branches
     midPath.append('image')
 	.attr('class', 'node branch')
-	.attr("xlink:href", function(d) { return d.data.type + ".png"; })
+	.attr("xlink:href", function(d) { return "images/" + d.data.type + ".png"; })
 	.attr("width", ICON_SIZE * 0.8).attr("height",ICON_SIZE * 0.8)
 
     // Add labels for the nodes
@@ -203,7 +203,7 @@ function update(source) {
     var nodeUpdate = nodeEnter.merge(node);
     
     nodeUpdate.select("text.label").text(function(d) { return d.data.name });
-    nodeUpdate.select("image").attr("xlink:href",function(d) { return d.data.channel+".png"; })
+    nodeUpdate.select("image").attr("xlink:href",function(d) { return "images/" + d.data.channel+".png"; })
 	.filter(function(d) { return d.data.type != "conversion"; })
 	.attr("data-toggle","modal")
 	.attr("data-target","#myModal")

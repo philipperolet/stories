@@ -108,7 +108,7 @@ Object.keys(details).forEach(function(type) {
     var selection = d3.selectAll("."+type+"-info").selectAll("div.item")
 	.data(Object.values(details[type]));
     var selEnter = selection.enter().append('div').attr("class", "item");
-    selEnter.filter(function(d) { return type != "perf";}).append("img").attr("src", function(d) { return d.id + ".png";})
+    selEnter.filter(function(d) { return type != "perf";}).append("img").attr("src", function(d) { return "images/" + d.id + ".png";})
 	.attr("class", "item-img")
 	.attr("width", ICON_SIZE)
     	.attr("height", ICON_SIZE);
