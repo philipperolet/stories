@@ -1,7 +1,7 @@
 # Stories - Customer Journey Simulator
 Interactive multistep adaptative marketing campaign simulator. Design a marketing campaign, run it, automate it via AI.
 
-Use it on https://stories.filou.tech
+Use it on https://stories.machine-zero.com
 
 ## How to use the simulator
 
